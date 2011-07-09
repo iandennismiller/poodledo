@@ -14,19 +14,17 @@ Usage
     from apiclient import ApiClient
     c = ApiClient()
     c.authenticate('username@email.dom', 'password')
-    c.getFolders()  # etc.
+    c.getFolders()
+    c.editFolder('Current Folder Name', name='New Folder Name', private=True)  #etc
 
 Notes
 =====
 - In order to use this library, you will need to [get your own API token](http://api.toodledo.com/2/account/doc_register.php). I have not included mine in the code. Add it to `ApiClient.__init__`.
 - The test harness `test_poodledo.py` does not function at all currently. Updating it for the 2.0 API is on my list.
 
-
-
 License
 =======
 poodledo is released under a **BSD License**. See LICENSE file for details.
-
 
 Contact
 =======
