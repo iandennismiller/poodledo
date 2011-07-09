@@ -24,6 +24,7 @@ Create an `ApiClient` object and call `authenticate()` to get a session key. Thi
 API Structure
 -------------
 Toodledo's API is broken down into six basic object types:
+
 - Folders
 - Contexts
 - Goals
@@ -80,12 +81,12 @@ TODO
 - Implement a generic account/key storage system
 - Write several sample scripts for reference
 - Add batch processing for notes and tasks
-- Write a "pythonic" wrapper that makes the returned objects smart (e.g., doing `task_object.name = "New Name" would actually update the task's name with the API)
+- Write a "pythonic" wrapper that makes the returned objects smart (e.g., doing `task_object.name = "New Name"` would actually update the task's name with the API)
 - Make objects which have an ordering (folders and subtasks) a) honor that ordering, and b) be re-orderable
 
 License
 =======
-poodledo is released under a **BSD License**. See LICENSE file for details.
+poodledo is released under a **BSD License**. See the LICENSE file for details.
 
 Contact
 =======
