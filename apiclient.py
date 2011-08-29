@@ -209,6 +209,89 @@ class ApiClient(object):
         return self._pro
 
     ###
+    # Dispatch
+    ###
+    def dispatchCall(self, kind, action):
+        dt = {
+            'folder': {
+                'add': self.addFolder,
+                'delete': self.deleteFolder,
+                'edit': self.editFolder,
+                'get': self.getFolder,
+                'getall': self.getFolders
+            },
+            'context': {
+                'add': self.addContext,
+                'delete': self.deleteContext,
+                'edit': self.editContext,
+                'get': self.getContext,
+                'getall': self.getContexts
+            },
+            'goal': {
+                'add': self.addGoal,
+                'delete': self.deleteGoal,
+                'edit': self.editGoal,
+                'get': self.getGoal,
+                'getall': self.getGoals
+            },
+            'location': {
+                'add': self.addLocation,
+                'delete': self.deleteLocation,
+                'edit': self.editLocation,
+                'get': self.getLocation,
+                'getall': self.getLocations
+            },
+            'notebook': {
+                'add': self.addNotebook,
+                'delete': self.deleteNotebook,
+                'edit': self.editNotebook,
+                'get': self.getNotebook,
+                'getall': self.getNotebooks
+            },
+            'task': {
+                'add': self.addTask,
+                'delete': self.deleteTask,
+                'edit': self.editTask,
+                'get': self.getTask,
+                'getall': self.getTasks
+            }
+        }
+        return dt[kind][action]
+
+    ###
+    # Translate
+    ###
+    def translate(self, field, value):
+        if field == 'status':
+            statuses = [
+                'none',
+                'next action',
+                'active',
+                'planning',
+                'delegated',
+                'waiting',
+                'hold',
+                'postponed',
+                'someday',
+                'canceled',
+                'reference'
+                ]
+
+            lval = value.lower()
+            if lval in statuses:
+                return statuses.index(lval)
+            return 0
+
+        if field in ['folder', 'context', 'goal', 'location']:
+            try:
+                fid = self.dispatchCall(field, 'get')(value)['id']
+            except PoodledoError:
+                fid = 0
+            return fid
+
+        return value
+
+    ###
     # Folders
     ###
     @check_api_key
@@ -572,6 +655,7 @@ class ApiClient(object):
         @type folder: C{int}
         '''
         kwargs['title'] = title
+        for field in kwargs: kwargs[field] = self.translate(field, kwargs[field])
         self._tasks_cache = None
         return self._call(key=key, kind='tasks', action='add', tasks=[kwargs]).text
 
@@ -602,6 +686,7 @@ class ApiClient(object):
         @raise PoodledoError: Throws an error if the task does not exist
         '''
         kwargs['id'] = self.getTask(label).id
+        for field in kwargs: kwargs[field] = self.translate(field, kwargs[field])
         self._tasks_cache = None
         return self._call(key=key, kind='tasks', action='edit', tasks=[kwargs]).text
 
