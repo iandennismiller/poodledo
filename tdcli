@@ -38,4 +38,5 @@ if __name__ == '__main__':
     task = parse(r)
     client.addTask(**task)
 
+    print
     print client.getTask(task['title'])
