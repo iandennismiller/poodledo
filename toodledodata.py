@@ -147,5 +147,9 @@ class ToodledoData(object):
         if node.text and not node.text.isspace() :
             self.title = node.text
 
+    def __str__(self):
+        output = ["%s: %s" % (k, v) for (k, v) in self.__dict__.iteritems()]
+        return '\n'.join(output)
+
     def __repr__(self):
         return str(self.__dict__)
