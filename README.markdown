@@ -1,3 +1,30 @@
+NEWS
+====
+I've added a few new features to the library:
+
+- Pretty-printing for ToodledoData objects (tasks and such)
+- Smarter object detection and parsing for API client calls; now you can call "addTask('task name', folder='folder name')" and the folder ID will be figured out automatically
+- And the biggie: parsing [the Toodledo email syntax](https://www.toodledo.com/info/help_email.php) for adding new tasks!
+
+There is now a lexer.parse() function that will accept a string with the Toodledo email syntax and return a parsed task dictionary which addTask() will happily accept.
+
+The new program `tdcli` demonstrates this feature:
+
+    $ tdcli
+    Enter a task description: This task is important !! #Today $Next Action
+
+    modified: 1314577488
+    id: 36647367
+    title: This task is important
+    priority: 2
+    duedate: 1314532800
+    status: 1
+    added: 1314532800
+
+Not all of the syntax options work yet, and the parsing is very fragile, so if you run into any trouble please submit an issue request.
+
+------
+
 Introduction
 ============
 poodledo is a Python library for working with the web-based task management software [Toodledo](http://www.toodledo.com).
