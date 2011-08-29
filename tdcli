@@ -1,0 +1,41 @@
+#!/usr/bin/python
+
+from ConfigParser import SafeConfigParser,NoOptionError
+from sys import argv
+
+from apiclient import ApiClient,ToodledoError
+from lexer import parse
+
+if __name__ == '__main__':
+    configfile = 'config'
+    config = SafeConfigParser()
+    cfile = open(configfile, 'r+')
+    config.readfp(cfile)
+
+    client = ApiClient()
+    key = None
+    try:
+        client._key = config.get('session', 'key')
+    except NoOptionError:
+        username = config.get('config','username')
+        passwd = config.get('config','passwd')
+        client.authenticate(username, passwd)
+
+    try:
+        client.getAccountInfo()
+    except ToodledoError as e:
+        client._key = None
+        username = config.get('config','username')
+        passwd = config.get('config','passwd')
+        client.authenticate(username,passwd)
+        config.set('session', 'key', client.key)
+        config.write(cfile)
+
+    if len(argv) > 1:
+        r = ' '.join(argv[1:])
+    else:
+        r = raw_input("Enter a task description: ")
+    task = parse(r)
+    client.addTask(**task)
+
+    print client.getTask(task['title'])
