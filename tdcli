@@ -9,22 +9,22 @@ import readline
 
 usage = '''Enter a task and associated metadata:
 
-priority: default is zero; single ! = 1, !! = 2, !!! = 3 (top)
-due date: #<date>; toodledo parses dates smartly, including "#next thursday", and email does consume the space after #next as part of the date
-start date: ><date> (&lt;)
-star: * alone makes the task starred
-folder: *<name>
 context: @<context>
-goal: +<goal>
-status: $<status>
-tag: %<tag>; can select multiple with "%tag1, tag2"
+due date: #<date>; toodledo parses dates smartly, including "#next thursday", and email does consume the space after #next as part of the date
 due time: =<time>; translates time smartly
-start time: ^<time>
+folder: *<name>
+goal: +<goal>
 length: ~<time>; like "~4hours"
-repeat: &<schedule>
-reminder: :<lead time>; ":5 hours"
 location: -<location>
 note: ?<note data>
+priority: default is zero; single ! = 1, !! = 2, !!! = 3 (top)
+reminder: :<lead time>; ":5 hours"
+repeat: &<schedule>
+star: * alone makes the task starred
+start date: ><date> (&lt;)
+start time: ^<time>
+status: $<status>
+tag: %<tag>; can select multiple with "%tag1, tag2"
 '''
 
 def read_or_get_creds(config):
