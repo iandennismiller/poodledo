@@ -21,7 +21,10 @@ except ImportError:
 try:
     from json import dumps
 except ImportError:
-    from simplejson import dumps
+    try:
+        from simplejson import dumps
+    except ImportError:
+        exit("poodledo requires either Python 2.6+, or the simplejson module installed.")
 
 ## Expose the ApiClient and error classes for importing
 __all__ = ['ApiClient', 'ToodledoError', 'PoodledoError']
