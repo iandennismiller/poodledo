@@ -2,7 +2,6 @@
 from urllib import quote_plus
 from urllib2 import build_opener, quote
 from sys import exit
-from json import dumps
 from datetime import datetime, timedelta
 from toodledodata import ToodledoData
 
@@ -18,6 +17,11 @@ try:
     from hashlib import md5
 except ImportError:
     from md5 import md5
+
+try:
+    from json import dumps
+except ImportError:
+    from simplejson import dumps
 
 ## Expose the ApiClient and error classes for importing
 __all__ = ['ApiClient', 'ToodledoError', 'PoodledoError']
