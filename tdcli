@@ -5,6 +5,7 @@ from apiclient import ApiClient,ToodledoError
 from getpass import getpass
 from lexer import parse
 from sys import argv,exit
+import readline
 
 usage = '''Enter a task and associated metadata:
 
