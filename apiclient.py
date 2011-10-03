@@ -291,7 +291,7 @@ class ApiClient(object):
 
         if field in ['folder', 'context', 'goal', 'location']:
             try:
-                fid = self.dispatchCall(field, 'get')(value)['id']
+                fid = getattr(self.dispatchCall(field, 'get')(value), 'id')
             except PoodledoError:
                 fid = 0
             return fid
@@ -357,7 +357,7 @@ class ApiClient(object):
         '''
         for f in self.getFolders():
             if str(label) == str(f.id) or \
-                    label == f.name or \
+                    label.lower() == f.name.lower() or \
                     (hasattr(label, 'id') and label.id == f.id):
                 return f
         raise PoodledoError('A folder with that name/id does not exist!')
@@ -417,7 +417,7 @@ class ApiClient(object):
         '''
         for f in self.getContexts():
             if str(label) == str(f.id) or \
-                    label == f.name or \
+                    label.lower() == f.name.lower() or \
                     (hasattr(label, 'id') and label.id == f.id):
                 return f
         raise PoodledoError('A context with that name/id does not exist!')
@@ -491,7 +491,7 @@ class ApiClient(object):
         '''
         for f in self.getGoals():
             if str(label) == str(f.id) or \
-                    label == f.name or \
+                    label.lower() == f.name.lower() or \
                     (hasattr(label, 'id') and label.id == f.id):
                 return f
         raise PoodledoError('A goal with that name/id does not exist!')
@@ -563,7 +563,7 @@ class ApiClient(object):
         '''
         for f in self.getLocations():
             if str(label) == str(f.id) or \
-                    label == f.name or \
+                    label.lower() == f.name.lower() or \
                     (hasattr(label, 'id') and label.id == f.id):
                 return f
         raise PoodledoError('A location with that name/id does not exist!')
@@ -641,7 +641,7 @@ class ApiClient(object):
         '''
         for f in self.getNotebooks():
             if str(label) == str(f.id) or \
-                    label == f.title or \
+                    label.lower() == f.title.lower() or \
                     (hasattr(label, 'id') and label.id == f.id):
                 return f
         raise PoodledoError('A notebook with that name/id does not exist!')
@@ -758,7 +758,7 @@ class ApiClient(object):
         '''
         for f in self.getTasks(cache=cache):
             if str(label) == str(f.id) or \
-                    label == f.title or \
+                    label.lower() == f.title.lower() or \
                     (hasattr(label, 'id') and label.id == f.id):
                 return f
         raise PoodledoError('A task with that name/id does not exist!')
