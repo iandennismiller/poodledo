@@ -26,7 +26,7 @@ freetext = Alt( Rep1(word) + Rep(space + word),
  doublequote + Rep1(word) + Rep(space + word) + doublequote)
 
 folder = Alt(Bol, space) + Str("*") + Rep1(freetext)
-context = Alt(Bol, space) + Str("@") + Rep1(freetext)
+context = Alt(Bol, space) + Str("@") + Opt(Str("@")) + Rep1(freetext)
 excl = Str("!")
 priority = Alt(Bol, space) + Rep1(excl)
 star = Alt(Bol, space) + Str("*")
