@@ -7,25 +7,25 @@ I made some significant improvements to the `tdcli` tool:
 - Much better handling of the "config" file; in particular, if no valid session key or credentials are specified, it will ask for such on the command line, get a session key, and then cache the key (but not the credentials). This way, you don't have to store your password in plaintext anywhere.
 - Added usage statement to tdcli to explain how the lexer works:
 
-    $ tdcli -h
-    Enter a task and associated metadata:
+        $ tdcli -h
+        Enter a task and associated metadata:
 
-    context: @<context>
-    due date: #<date>; toodledo parses dates smartly, including "#next thursday", and email does consume the space after #next as part of the date
-    due time: =<time>; translates time smartly
-    folder: *<name>
-    goal: +<goal>
-    length: ~<time>; like "~4hours"
-    location: -<location>
-    note: ?<note data>
-    priority: default is zero; single ! = 1, !! = 2, !!! = 3 (top)
-    reminder: :<lead time>; ":5 hours"
-    repeat: &<schedule>
-    star: * alone makes the task starred
-    start date: ><date> (&lt;)
-    start time: ^<time>
-    status: $<status>
-    tag: %<tag>; can select multiple with "%tag1, tag2"
+        context: @<context>
+        due date: #<date>; toodledo parses dates smartly, including "#next thursday"
+        due time: =<time>; translates time smartly
+        folder: *<name>
+        goal: +<goal>
+        length: ~<time>; like "~4hours"
+        location: -<location>
+        note: ?<note data>
+        priority: default is zero; single ! = 1, !! = 2, !!! = 3 (top)
+        reminder: :<lead time>; ":5 hours"
+        repeat: &<schedule>
+        star: * alone makes the task starred
+        start date: ><date> (&lt;)
+        start time: ^<time>
+        status: $<status>
+        tag: %<tag>; can select multiple with "%tag1, tag2"
 
 - And in non-tdcli news, I fixed a couple of bugs elsewhere in the code.
 
