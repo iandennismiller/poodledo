@@ -77,7 +77,7 @@ def rationalize(task):
         if k in ['duedate', 'startdate', 'duetime', 'starttime']:
             task[k] = mktime(p.parse(task[k])[0])
         if k == 'priority': task[k] = len(task[k])
-        return task
+    return task
 
 def parse(task):
     r = StringIO(task)
