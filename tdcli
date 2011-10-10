@@ -4,6 +4,8 @@ from ConfigParser import SafeConfigParser,NoOptionError,NoSectionError
 from apiclient import ApiClient,ToodledoError
 from getpass import getpass
 from lexer import parse
+from optparse import OptionParser
+from os.path import expanduser
 from sys import argv,exit
 import readline
 
@@ -43,11 +45,12 @@ def read_or_get_creds(config):
 
 
 if __name__ == '__main__':
-    if len(argv) > 1 and argv[1] == '-h':
-        print usage
-        exit(0)
+    parser = OptionParser(usage = "usage: %prog <task description>")
+    parser.add_option("-l", "--list", action="store_true", dest="show_tasks", default=False,
+                      help="Show unfinished tasks")
+    (options, args) = parser.parse_args()
 
-    configfile = 'config'
+    configfile = expanduser('~/.tdclirc')
     config = SafeConfigParser()
     config.read(configfile)
 
@@ -75,7 +78,11 @@ if __name__ == '__main__':
         config.write(cfile)
         cfile.close()
 
-    if len(argv) > 1:
+    if options.show_tasks:
+        tasks = [str(x.title) for x in reversed(client.getTasks(comp=False))]
+        for item in tasks: print "* " + item
+        exit(0)
+    elif len(argv) > 1:
         r = ' '.join(argv[1:])
     else:
         print usage
