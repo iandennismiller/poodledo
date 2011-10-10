@@ -1,5 +1,14 @@
 NEWS
 ====
+2011-10-10
+----------
+I've made a few more improvements to the `tdcli` tool:
+
+- `tdcli` now supports listing tasks with `-l` / `--list`
+- `tdcli` now stores session and login data in `~/.tdclirc` instead of a file called "config" in the current directory
+
+The next improvements I want to make are to have the list of tasks accept some filters (so I can say, "list all tasks with the tag 'work'"), and also to automatically list subtasks under their parents if your account supports them. Further on I'd like to implement more of the featureset of [the Ruby toodledo client](http://toodledo.rubyforge.org/toodledo/), specifically the "online" mode where you can poke around in your tasks and create folders, contexts, etc.
+
 2011-10-03
 ----------
 I made some significant improvements to the `tdcli` tool:
