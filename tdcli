@@ -48,6 +48,10 @@ if __name__ == '__main__':
     parser = OptionParser(usage = "usage: %prog <task description>")
     parser.add_option("-l", "--list", action="store_true", dest="show_tasks", default=False,
                       help="Show unfinished tasks")
+    parser.add_option("-f", "--folders", action="store_true", dest="show_folders", default=False,
+                      help="Show list of folders")
+    parser.add_option("-g", "--goals", action="store_true", dest="show_goals", default=False,
+                      help="Show list of goals")
     (options, args) = parser.parse_args()
 
     configfile = expanduser('~/.tdclirc')
@@ -81,6 +85,14 @@ if __name__ == '__main__':
     if options.show_tasks:
         tasks = [str(x.title) for x in reversed(client.getTasks(comp=False))]
         for item in tasks: print "* " + item
+        exit(0)
+    elif options.show_folders:
+        folders = [str(x.name) for x in client.getFolders()]
+        for item in folders: print "* " + item
+        exit(0)
+    elif options.show_goals:
+        goals = [str(x.name) for x in sorted(client.getGoals())]
+        for item in goals: print "* " + item
         exit(0)
     elif len(argv) > 1:
         r = ' '.join(argv[1:])
