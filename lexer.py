@@ -2,70 +2,90 @@ from plex import *
 import parsedatetime.parsedatetime as pdt
 from time import mktime
 from StringIO import StringIO
+from os.path import exists
+
+import pickle
 
 p = pdt.Calendar()
 
-letter = Range("AZaz")
-digit = Range("09")
-apos = Str("'")
-dash = Str("-")
-comma = Str(",")
-period = Str(".")
-slash = Str("/")
-underscore = Str("_")
-parens = Any("()")
-formatting = Any("'-,./_():;?\\|!")
-word = Rep1(letter | digit | parens | dash | slash) + Rep(letter | digit | apos | dash | comma | period | slash | underscore | formatting | parens)
-number = Rep1(digit)
-space = Any(" \t")
-newline = Any("\n\r")
-quote = Str("'")
-doublequote= Str('"')
-freetext = Alt( Rep1(word) + Rep(space + word),
- quote + Rep1(word) + Rep(space + word) + quote,
- doublequote + Rep1(word) + Rep(space + word) + doublequote)
+def build_lexer(picklefile=None):
+    lex = None
+    if picklefile and exists(picklefile):
+        try:
+            with open(picklefile, "r") as fd:
+                lex = pickle.load(fd)
+        except (KeyError, IOError):
+            pass    # pickle loading failed; regenerate lexer
 
-folder = Alt(Bol, space) + Str("*") + Rep1(freetext)
-context = Alt(Bol, space) + Str("@") + Opt(Str("@")) + Rep1(freetext)
-excl = Str("!")
-priority = Alt(Bol, space) + Rep1(excl)
-star = Alt(Bol, space) + Str("*")
+    if not lex:
+        letter = Range("AZaz")
+        digit = Range("09")
+        apos = Str("'")
+        dash = Str("-")
+        comma = Str(",")
+        period = Str(".")
+        slash = Str("/")
+        underscore = Str("_")
+        parens = Any("()")
+        formatting = Any("'-,./_():;?\\|!")
+        word = Rep1(letter | digit | parens | dash | slash) + Rep(letter | digit | apos | dash | comma | period | slash | underscore | formatting | parens)
+        number = Rep1(digit)
+        space = Any(" \t")
+        newline = Any("\n\r")
+        quote = Str("'")
+        doublequote= Str('"')
+        bolsp = Alt(Bol, space)
+        freetext = Alt( Rep1(word) + Rep(space + word),
+                        quote + Rep1(word) + Rep(space + word) + quote,
+                        doublequote + Rep1(word) + Rep(space + word) + doublequote)
+
+        folder = bolsp + Str("*") + Rep1(freetext)
+        context = bolsp + Str("@") + Opt(Str("@")) + Rep1(freetext)
+        excl = Str("!")
+        priority = bolsp + Rep1(excl)
+        star = bolsp + Str("*")
 #datefield = digit + digit + digit + digit + Str("/", "-") + digit + digit + Str("/", "-") + digit + digit
-datefield = freetext
-duedate = Alt(Bol, space) + Str("#") + datefield
-startdate = Alt(Bol, space) + Str(">") + datefield
-goal = Alt(Bol, space) + Str("+") + Rep1(freetext)
-status = Alt(Bol, space) + Str("$") + Rep1(freetext)
+        datefield = freetext
+        duedate = bolsp + Str("#") + datefield
+        startdate = bolsp + Str(">") + datefield
+        goal = bolsp + Str("+") + Rep1(freetext)
+        status = bolsp + Str("$") + Rep1(freetext)
 #tagname = Rep1(word) + Opt(Str(",")) + Opt(space)
-tag = Alt(Bol, space) + Str("%") + Rep1(word) + Rep(Str(",") + Opt(space) + word)
-timefield = Rep1(number) + Opt(Str(":") + Rep1(number)) + Opt(space) + Str("AM", "PM", "am", "pm")
-duetime = Alt(Bol, space) + Str("=") + Rep1(timefield)
-starttime = Alt(Bol, space) + Str("^") + Rep1(timefield)
-location = Alt(Bol, space) + Str("-") + Rep1(freetext)
-durationfield = freetext
-length = Alt(Bol, space) + Str("~") + Rep1(durationfield)
-reminder = Alt(Bol, space) + Str(":") + Rep1(durationfield)
-note = Alt(Bol, space) + Str("?") + Rep1(freetext)
+        tag = bolsp + Str("%") + Rep1(word) + Rep(Str(",") + Opt(space) + word)
+        timefield = Rep1(number) + Opt(Str(":") + Rep1(number)) + Opt(space) + Str("AM", "PM", "am", "pm")
+        duetime = bolsp + Str("=") + Rep1(timefield)
+        starttime = bolsp + Str("^") + Rep1(timefield)
+        location = bolsp + Str("-") + Rep1(freetext)
+        durationfield = freetext
+        length = bolsp + Str("~") + Rep1(durationfield)
+        reminder = bolsp + Str(":") + Rep1(durationfield)
+        note = bolsp + Str("?") + Rep1(freetext)
 
-lex = Lexicon([
-    (space, IGNORE),
-    (newline, 'newline'),
-    (freetext, 'title'),
-    (folder, 'folder'),
-    (context, 'context'),
-    (priority, 'priority'),
-    (duedate, 'duedate'),
-    (startdate, 'startdate'),
-    (goal, 'goal'),
-    (status, 'status'),
-    (tag, 'tag'),
-    (duetime, 'duetime'),
-    (starttime, 'starttime'),
-    (location, 'location'),
-    (length, 'length'),
-    (reminder, 'reminder'),
-    (note, 'note'),
-])
+        lex = Lexicon([
+                (space, IGNORE),
+                (newline, 'newline'),
+                (freetext, 'title'),
+                (folder, 'folder'),
+                (context, 'context'),
+                (priority, 'priority'),
+                (duedate, 'duedate'),
+                (startdate, 'startdate'),
+                (goal, 'goal'),
+                (status, 'status'),
+                (tag, 'tag'),
+                (duetime, 'duetime'),
+                (starttime, 'starttime'),
+                (location, 'location'),
+                (length, 'length'),
+                (reminder, 'reminder'),
+                (note, 'note'),
+                ])
+
+        if picklefile:
+            with open(picklefile, "w") as fd:
+                pickle.dump(lex, fd)
+
+    return lex
 
 def rationalize(task):
     for k in task.keys():
@@ -79,7 +99,7 @@ def rationalize(task):
         if k == 'priority': task[k] = len(task[k])
     return task
 
-def parse(task):
+def parse(task, lex):
     r = StringIO(task)
     scanner = Scanner(lex, r, "raw task")
     parsedtask = {}

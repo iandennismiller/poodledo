@@ -1,5 +1,14 @@
 NEWS
 ====
+2011-11-11
+----------
+I did some work to fix [Issue#2](https://github.com/handyman5/poodledo/issues/2):
+
+- Configuration moved to `~/.tdcli/tdclirc`.
+- To improve startup speed, `tdcli` caches a Python "pickle" of the lexer in `~/.tdcli/lexer.pickle`. This saves `tdcli` from having to regenerate the entire lexer each time. This file is safe to delete at any time; `tdcli` will just regenerate it the next time it's run.
+
+I did not write code to automatically migrate the configuration file from the old location, so please keep in mind that you'll need to move it yourself.
+
 2011-10-10
 ----------
 I've made a few more improvements to the `tdcli` tool:

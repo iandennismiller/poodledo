@@ -3,9 +3,10 @@
 from ConfigParser import SafeConfigParser,NoOptionError,NoSectionError
 from apiclient import ApiClient,ToodledoError
 from getpass import getpass
-from lexer import parse
+from lexer import build_lexer, parse
 from optparse import OptionParser
-from os.path import expanduser
+from os import mkdir
+from os.path import exists, expanduser
 from sys import argv,exit
 import readline
 
@@ -54,7 +55,9 @@ if __name__ == '__main__':
                       help="Show list of goals")
     (options, args) = parser.parse_args()
 
-    configfile = expanduser('~/.tdclirc')
+    configdir = expanduser('~/.tdcli')
+    configfile = expanduser('~/.tdcli/tdclirc')
+    lexerfile = expanduser('~/.tdcli/lexer.pickle')
     config = SafeConfigParser()
     config.read(configfile)
 
@@ -78,6 +81,9 @@ if __name__ == '__main__':
             config.add_section('session')
 
         config.set('session', 'key', client.key)
+
+        if not exists(configdir):
+            mkdir(configdir)
         cfile = open(configfile, 'w')
         config.write(cfile)
         cfile.close()
@@ -99,8 +105,8 @@ if __name__ == '__main__':
     else:
         print usage
         r = raw_input("Enter a task description: ")
-    task = parse(r)
-    client.addTask(**task)
 
+    task = parse(r, build_lexer(lexerfile))
+    client.addTask(**task)
     print
     print client.getTask(task['title'])
