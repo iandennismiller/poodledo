@@ -86,6 +86,10 @@ Requirements
 ============
 - Python 2.5+ (or, an older version with the ElementTree module installed)
 
+In addition, `tdcli` requires the following Python modules (both available by `pip install`):
+- [Plex](http://www.cosc.canterbury.ac.nz/greg.ewing/python/Plex/) v2.0.0
+- [parsedatetime](http://code.google.com/p/parsedatetime/) v0.8.7
+
 Usage
 =====
 poodledo handles almost all of the API calls described in the [Toodledo docs](http://api.toodledo.com/2/index.php).
