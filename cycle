@@ -1,0 +1,73 @@
+#!/usr/bin/python
+
+from cli import do_login
+from datetime import datetime, timedelta
+from dateutil import tz
+from lexer import parse, USAGE
+from optparse import OptionParser
+from sys import exit
+from time import mktime, localtime
+
+if __name__ == '__main__':
+    parser = OptionParser(usage = "usage: %prog <flag> [<TASK#>]")
+    parser.add_option("-a", action="store_true", dest="add",
+                      help="Add a new task for today")
+    parser.add_option("-l", action="store_true", dest="list", default=False,
+                      help="Show today's tasks, ordered priority decreasing")
+    parser.add_option("-m", action="store", type=int, dest="move", metavar="TASK#",
+                      help="Move this task to the next working day")
+    parser.add_option("-d", action="store", type=int, dest="done", metavar="TASK#",
+                      help="Mark this task as done")
+    parser.add_option("-p", action="store", type=int, dest="priority", metavar="TASK#",
+                      help="Change the priority of this task (A, B, or C)")
+    (options, args) = parser.parse_args()
+
+    if not (options.list or options.add or options.move or options.priority or options.done):
+        parser.print_help()
+        exit(1)
+
+    client = do_login()
+
+    now = datetime.now(tz.tzlocal())
+    daystart = datetime(now.year, now.month, now.day, tzinfo=now.tzinfo)
+    dayend = daystart + timedelta(days=1)
+    utc_daystart = mktime(daystart.timetuple())
+    utc_dayend = mktime(dayend.timetuple())
+
+    priorities = ['D', 'C', 'B', 'A', 'E']
+
+    tasks = [x for x in client.getTasks(fields='duedate,duetime,priority',comp=False) if utc_daystart < int(x.duedate) < utc_dayend]
+    tasks.sort(cmp, key=lambda x:-(x.priority))
+
+    if options.list:
+        for item in tasks:
+            print "%d: (%s) %s" % (tasks.index(item) + 1, priorities[item.priority], item.title)
+
+    elif options.add:
+        if len(args) > 0:
+            r = ' '.join(args)
+        else:
+            print USAGE
+            import readline
+            r = raw_input("Enter a task description: ")
+        task = parse(r)
+        client.addTask(duedate=utc_daystart, **task)
+
+    elif options.move:
+        task = tasks[options.move-1]
+        print "Moving task '%s' to tomorrow" % task.title
+        if task.duetime != 0:
+            client.editTask(task, duedate=task.duedate + 86400, duetime=task.duetime + 86400)
+        else:
+            client.editTask(task, duedate=task.duedate + 86400)
+
+    elif options.priority:
+        if len(args) == 1:
+            task = tasks[options.priority-1]
+            print "Reprioritizing task '%s' to %s" % (task.title, args[0])
+            client.editTask(task, priority=priorities.index(args[0]))
+
+    elif options.done:
+        task = tasks[options.done-1]
+        print "Marking task '%s' as complete" % task.title
+        client.editTask(task, completed=mktime(localtime()))
