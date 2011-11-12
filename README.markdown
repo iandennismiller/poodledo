@@ -1,5 +1,27 @@
 NEWS
 ====
+2011-11-11, part 2
+------------------
+Since I was on a roll, I decided to keep working.
+
+The big changes are a refactoring of the CLI resources into a separate module and a new tool, `cycle`.
+
+CLI module
+~~~~~~~~~~
+I refactored the code needed to get a CLI running (such as loading the config file and opening a connection to the API) into its own module, with a simple entry point (`do_login`). Calling `do_login` will attempt to load the config file and set up an API client object, and return it if successful. This change makes creating a new CLI tool a lot simpler.
+
+"cycle"
+~~~~~~~
+I wrote another CLI tool, `cycle`, which attempts to implement the **Cycle System** from [Time Management for System Administrators](http://www.amazon.com/Management-System-Administrators-Thomas-Limoncelli/dp/0596007833) by Thomas Limoncelli. The Cycle System, in this context, has five main activities:
+
+- Display the tasks assigned to today's list
+- Add a new task
+- Complete a task
+- Move a task
+- Reprioritize a task
+
+It's a lot to explain in a short blurb here, but basically, the idea is to assign your tasks to a specific day, and by the end of the day, to have taken some action with each task (either completing it, deleting it, or moving it to another specific day). `cycle` implements this system by keying off of the `duedate` field in Toodledo; when you run `cycle` by itself, it will show a list of all of your tasks which have a `duedate` of today, along with their priorities. Really though, if this sounds at all intriguing, you should read the book; Tom explains it a lot better than I ever could.
+
 2011-11-11
 ----------
 I did some work to fix [Issue#2](https://github.com/handyman5/poodledo/issues/2):
