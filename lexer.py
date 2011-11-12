@@ -1,10 +1,30 @@
-from plex import *
-import parsedatetime.parsedatetime as pdt
-from time import mktime
 from StringIO import StringIO
-from os.path import exists
-
+from cli import CONFIGDIR
+from os.path import exists, join
+from plex import *
+from time import mktime
+import parsedatetime.parsedatetime as pdt
 import pickle
+
+USAGE = '''Enter a task and associated metadata:
+
+context: @<context>
+due date: #<date>; toodledo parses dates smartly, including "#next thursday", and email does consume the space after #next as part of the date
+due time: =<time>; translates time smartly
+folder: *<name>
+goal: +<goal>
+length: ~<time>; like "~4hours"
+location: -<location>
+note: ?<note data>
+priority: default is zero; single ! = 1, !! = 2, !!! = 3 (top)
+reminder: :<lead time>; ":5 hours"
+repeat: &<schedule>
+star: * alone makes the task starred
+start date: ><date> (&lt;)
+start time: ^<time>
+status: $<status>
+tag: %<tag>; can select multiple with "%tag1, tag2"
+'''
 
 p = pdt.Calendar()
 
@@ -99,7 +119,9 @@ def rationalize(task):
         if k == 'priority': task[k] = len(task[k])
     return task
 
-def parse(task, lex):
+def parse(task, lex=None):
+    if not lex:
+        lex = build_lexer(join(CONFIGDIR, "lexer.pickle"))
     r = StringIO(task)
     scanner = Scanner(lex, r, "raw task")
     parsedtask = {}
