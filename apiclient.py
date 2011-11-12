@@ -757,8 +757,10 @@ class ApiClient(object):
         @raise PoodledoError: Throws an error if the task does not exist
         '''
         for f in self.getTasks(cache=cache):
-            if str(label) == str(f.id) or \
-                    label.lower() == f.title.lower() or \
-                    (hasattr(label, 'id') and label.id == f.id):
-                return f
+            try:
+                if int(label) == f.id: return f
+            except ValueError:
+                if label.lower() == f.title.lower(): return f
+            except TypeError:
+                if hasattr(label, 'id') and label.id == f.id: return f
         raise PoodledoError('A task with that name/id does not exist!')
