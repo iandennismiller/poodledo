@@ -6,12 +6,10 @@ Since I was on a roll, I decided to keep working.
 
 The big changes are a refactoring of the CLI resources into a separate module and a new tool, `cycle`.
 
-CLI module
-~~~~~~~~~~
+### CLI module
 I refactored the code needed to get a CLI running (such as loading the config file and opening a connection to the API) into its own module, with a simple entry point (`do_login`). Calling `do_login` will attempt to load the config file and set up an API client object, and return it if successful. This change makes creating a new CLI tool a lot simpler.
 
-"cycle"
-~~~~~~~
+### "cycle"
 I wrote another CLI tool, `cycle`, which attempts to implement the **Cycle System** from [Time Management for System Administrators](http://www.amazon.com/Management-System-Administrators-Thomas-Limoncelli/dp/0596007833) by Thomas Limoncelli. The Cycle System, in this context, has five main activities:
 
 - Display the tasks assigned to today's list
