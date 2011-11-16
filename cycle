@@ -5,7 +5,6 @@ from datetime import datetime, timedelta
 from dateutil import tz
 from lexer import parse, USAGE
 from optparse import OptionParser
-from sys import exit
 from time import mktime, localtime
 import parsedatetime.parsedatetime as pdt
 
@@ -100,8 +99,7 @@ if __name__ == '__main__':
         try:
             task = tasks[options.move-1]
         except IndexError:
-            print "That task does not exist!"
-            exit(1)
+            parser.error("That task does not exist!")
         dest = len(args) == 1 and args[0] or "tomorrow"
         print "Moving task '%s' to %s" % (task.title, dest)
         delta = get_timedelta(task.duedate, dest)
@@ -116,8 +114,7 @@ if __name__ == '__main__':
             try:
                 task = tasks[options.priority-1]
             except IndexError:
-                print "That task does not exist!"
-                exit(1)
+                parser.error("That task does not exist!")
             print "Reprioritizing task '%s' to %s" % (task.title, args[0])
             client.editTask(task, priority=priorities.index(args[0]))
         else:
@@ -127,8 +124,7 @@ if __name__ == '__main__':
         try:
             task = tasks[options.complete-1]
         except IndexError:
-            print "That task does not exist!"
-            exit(1)
+            parser.error("That task does not exist!")
         print "Marking task '%s' as complete" % task.title
         client.editTask(task, completed=mktime(localtime()))
 
