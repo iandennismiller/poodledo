@@ -39,6 +39,14 @@ def read_or_get_creds(config):
 
     return (username, password)
 
+def get_tag(config):
+    tag = None
+    try:
+        tag = config.get('filter', 'tag')
+    except (NoSectionError, NoOptionError):
+        pass
+    return tag
+
 def do_login(config=None):
     client = ApiClient()
     if not config:

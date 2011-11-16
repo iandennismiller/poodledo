@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from cli import do_login
+from cli import do_login, get_config, get_tag
 from datetime import datetime, timedelta
 from dateutil import tz
 from lexer import parse, USAGE
@@ -11,10 +11,19 @@ import parsedatetime.parsedatetime as pdt
 
 def get_day_boundaries(day='today'):
     p = pdt.Calendar()
-    timest = p.parse(day)[0]
-    now = datetime.fromtimestamp(mktime(timest), tz.tzlocal())
-    daystart = datetime(now.year, now.month, now.day, tzinfo=now.tzinfo)
-    dayend = daystart + timedelta(days=1)
+    if day == "week":
+        sunday = p.parse("last sunday")[0]
+        saturday = p.parse("saturday")[0]
+        start = datetime.fromtimestamp(mktime(sunday), tz.tzlocal())
+        end = datetime.fromtimestamp(mktime(saturday), tz.tzlocal())
+        daystart = datetime(start.year, start.month, start.day, tzinfo=start.tzinfo)
+        dayend = datetime(end.year, end.month, end.day, tzinfo=end.tzinfo)
+    else:
+        timest = p.parse(day)[0]
+        now = datetime.fromtimestamp(mktime(timest), tz.tzlocal())
+        daystart = datetime(now.year, now.month, now.day, tzinfo=now.tzinfo)
+        dayend = daystart + timedelta(days=1)
+
     utc_daystart = mktime(daystart.timetuple())
     utc_dayend = mktime(dayend.timetuple())
     return (utc_daystart, utc_dayend)
@@ -39,17 +48,34 @@ if __name__ == '__main__':
                       help="Mark this task as complete")
     parser.add_option("-p", action="store", type=int, dest="priority", metavar="TASK#",
                       help="Change the priority of this task (A, B, or C)")
+    parser.add_option("-t", action="store", dest="tag", metavar="TAG",
+                      help="Only show tasks with the tag TAG")
     (options, args) = parser.parse_args()
 
-    client = do_login()
+    config = get_config()
+    client = do_login(config)
+
+    if options.tag:
+        tag = options.tag
+    else:
+        tag = get_tag(config)
 
     start, end = get_day_boundaries(options.day)
     priorities = ['D', 'C', 'B', 'A', 'E']
 
-    tasks = [x for x in client.getTasks(fields='duedate,duetime,priority',comp=False) if start < int(x.duedate) < end]
-    tasks.sort(cmp, key=lambda x:-(x.priority))
+    tasks = []
+    raw_tasks = [x for x in client.getTasks(fields='duedate,duetime,priority,tag',comp=False) if start < int(x.duedate) < end]
 
-    if options.add:
+    for item in raw_tasks:
+        if tag:
+            if item.tag == tag:
+                tasks.append(item)
+        else:
+            tasks.append(item)
+
+    tasks.sort(cmp, key=lambda x:(-(x.priority), x.duedate, x.duetime))
+
+    if options.add and options.complete:
         if len(args) > 0:
             r = ' '.join(args)
         else:
@@ -57,7 +83,18 @@ if __name__ == '__main__':
             import readline
             r = raw_input("Enter a task description: ")
         task = parse(r)
-        client.addTask(duedate=start, **task)
+        client.addTask(startdate=start, duedate=start, tag=tag, **task)
+        client.editTask(task['title'], completed=mktime(localtime()))
+
+    elif options.add:
+        if len(args) > 0:
+            r = ' '.join(args)
+        else:
+            print USAGE
+            import readline
+            r = raw_input("Enter a task description: ")
+        task = parse(r)
+        client.addTask(duedate=start, tag=tag, **task)
 
     elif options.move:
         task = tasks[options.move-1]
@@ -83,4 +120,13 @@ if __name__ == '__main__':
 
     else:
         for item in tasks:
-            print "%d: (%s) %s" % (tasks.index(item) + 1, priorities[item.priority], item.title)
+            output = []
+            output.append("%s:" % str(tasks.index(item) + 1))
+            output.append("(%s)" % priorities[item.priority])
+            if options.day == "week":
+                output.append("[%s]" % datetime.fromtimestamp(item.duedate).strftime('%A'))
+            if tag:
+                output.append("{%s}" % item.tag)
+            output.append(item.title)
+
+            print " ".join(output)
