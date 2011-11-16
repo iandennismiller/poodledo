@@ -40,6 +40,8 @@ if __name__ == '__main__':
     parser = OptionParser(usage = "usage: %prog [<flag> [<TASK#>]] [-d <DATE>]\nPrints today's tasks by default")
     parser.add_option("-d", action="store", dest="day", metavar="DAY", default='today',
                       help="Day to operate on ('today' by default, parses most datestrings)")
+    parser.add_option("-t", action="store", dest="tag", metavar="TAG",
+                      help="Only show tasks with the tag TAG")
     parser.add_option("-a", action="store_true", dest="add",
                       help="Add a new task for today")
     parser.add_option("-m", action="store", type=int, dest="move", metavar="TASK#",
@@ -48,8 +50,6 @@ if __name__ == '__main__':
                       help="Mark this task as complete")
     parser.add_option("-p", action="store", type=int, dest="priority", metavar="TASK#",
                       help="Change the priority of this task (A, B, or C)")
-    parser.add_option("-t", action="store", dest="tag", metavar="TAG",
-                      help="Only show tasks with the tag TAG")
     (options, args) = parser.parse_args()
 
     config = get_config()
@@ -97,7 +97,11 @@ if __name__ == '__main__':
         client.addTask(duedate=start, tag=tag, **task)
 
     elif options.move:
-        task = tasks[options.move-1]
+        try:
+            task = tasks[options.move-1]
+        except IndexError:
+            print "That task does not exist!"
+            exit(1)
         dest = len(args) == 1 and args[0] or "tomorrow"
         print "Moving task '%s' to %s" % (task.title, dest)
         delta = get_timedelta(task.duedate, dest)
@@ -109,12 +113,22 @@ if __name__ == '__main__':
 
     elif options.priority:
         if len(args) == 1:
-            task = tasks[options.priority-1]
+            try:
+                task = tasks[options.priority-1]
+            except IndexError:
+                print "That task does not exist!"
+                exit(1)
             print "Reprioritizing task '%s' to %s" % (task.title, args[0])
             client.editTask(task, priority=priorities.index(args[0]))
+        else:
+            print "Please provide a priority to assign to the task."
 
     elif options.complete:
-        task = tasks[options.complete-1]
+        try:
+            task = tasks[options.complete-1]
+        except IndexError:
+            print "That task does not exist!"
+            exit(1)
         print "Marking task '%s' as complete" % task.title
         client.editTask(task, completed=mktime(localtime()))
 
