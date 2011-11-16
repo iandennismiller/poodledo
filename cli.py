@@ -27,10 +27,14 @@ def read_or_get_creds(config):
 
     try:
         username = config.get('config', 'username')
-        password = config.get('config', 'password')
+        print "Username:", username
     except (NoOptionError, NoSectionError):
         print "Please enter your login credentials."
         username = raw_input("Username: ")
+
+    try:
+        password = config.get('config', 'password')
+    except (NoOptionError, NoSectionError):
         password = getpass("Password: ")
 
     return (username, password)
