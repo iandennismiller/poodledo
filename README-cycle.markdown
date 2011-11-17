@@ -1,3 +1,17 @@
+NEWS
+====
+2011-11-16
+----------
+I made several changes to `cycle` which have made it more useful to me:
+
+- `cycle` now supports a "-t" parameter; it will only print tasks with that tag. You can also add a section to the config file called "[filter]" and a key there called "tag" which will have the same effect. This way you can keep your home and work to-do lists separate if you want. Also, newly created tasks will carry the currently-defined tag.
+- `cycle` now supports combining the -a (add) and -c (complete) arguments; it will create a new task and immediately close it, to aid in keeping track of completed, unplanned work.
+- Tasks now sort by duedate and duetime, in addition to by priority.
+- The "-d" parameter now supports a special "week" value, which sets the range of displayed tasks to ("last sunday", "saturday") inclusive. This violates the Cycle System, but I find I need the view.
+
+I also added a bit of error checking.
+
+
 Introduction
 ============
 `cycle` is a command-line tool which implements the **Cycle System** from [Time Management for System Administrators](http://www.amazon.com/Management-System-Administrators-Thomas-Limoncelli/dp/0596007833) by Thomas Limoncelli. The Cycle System, in this context, has five main activities:
