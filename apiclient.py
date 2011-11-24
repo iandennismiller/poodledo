@@ -81,18 +81,17 @@ class ApiClient(object):
     ''' Toodledo API client'''
     _SERVICE_URL = 'api.toodledo.com/2'
 
-    # application_id was poodledo
     def __init__(self, key=None, app_id=None, app_token=None):
         ''' Initializes a new ApiClient w/o auth credentials'''
-        self.application_id = app_id and app_id or "NOT_PROVIDED"
-        self.application_token = app_token and app_token or "NOT_PROVIDED"
-
-        # caches
+        self._key = key
+        self.application_id = app_id
+        self.application_token = app_token
         self._urlopener = build_opener()
         self._userid = None
         self._token = None
-        self._key = None
         self._pro = None
+
+        # caches
         self._contexts_cache = None
         self._folders_cache = None
         self._goals_cache = None

@@ -1,10 +1,12 @@
 #!/usr/bin/python
 
+from apiclient import PoodledoError
 from cli import do_login, get_config, get_tag
 from datetime import datetime, timedelta
 from dateutil import tz
 from lexer import parse, USAGE
 from optparse import OptionParser
+from sys import exit
 from time import mktime, localtime
 import parsedatetime.parsedatetime as pdt
 
@@ -51,8 +53,12 @@ if __name__ == '__main__':
                       help="Change the priority of this task (A, B, or C)")
     (options, args) = parser.parse_args()
 
-    config = get_config()
-    client = do_login(config)
+    try:
+        config = get_config()
+        client = do_login(config)
+    except PoodledoError as e:
+        print e
+        exit(1)
 
     if options.tag:
         tag = options.tag

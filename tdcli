@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+from apiclient import PoodledoError
 from cli import do_login
 from lexer import parse, USAGE
 from optparse import OptionParser
@@ -15,7 +16,11 @@ if __name__ == '__main__':
                       help="Show list of goals")
     (options, args) = parser.parse_args()
 
-    client = do_login()
+    try:
+        client = do_login()
+    except PoodledoError as e:
+        print e
+        exit(1)
 
     if options.show_tasks:
         tasks = [x.title for x in reversed(client.getTasks(comp=False))]

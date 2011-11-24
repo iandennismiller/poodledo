@@ -1,10 +1,11 @@
 #!/usr/bin/python
 
 from ConfigParser import SafeConfigParser,NoOptionError,NoSectionError
-from apiclient import ApiClient,ToodledoError
+from apiclient import ApiClient,PoodledoError,ToodledoError
 from getpass import getpass
 from os import mkdir
 from os.path import exists, expanduser, join
+from sys import exit
 
 CONFIGDIR  = expanduser("~/.tdcli")
 CONFIGFILE = join(CONFIGDIR, "tdclirc")
@@ -51,6 +52,13 @@ def do_login(config=None):
     client = ApiClient()
     if not config:
         config = get_config()
+    try:
+        client.application_id = config.get('application', 'id')
+        client.application_token = config.get('application', 'token')
+
+    except (NoSectionError, NoOptionError):
+        raise PoodledoError("Application ID or token not specified in %s.\nGenerate such at 'https://api.toodledo.com/2/account/doc_register.php?si=1'. Dying." % CONFIGFILE)
+
     try:
         client._key = config.get('session', 'key')
         client.getAccountInfo()
