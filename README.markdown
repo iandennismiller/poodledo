@@ -1,5 +1,9 @@
 NEWS
 ====
+2011-11-23
+----------
+I've taken ralesi's suggestion in [Issue#2](https://github.com/handyman5/poodledo/issues/2) and moved the API application ID and token to the config file (`~/.tdcli/tdclirc` by default). This way, `git pull`s will not conflict with your local ID and token. Thanks for the suggestion, Rich!
+
 2011-11-11, part 2
 ------------------
 Since I was on a roll, I decided to keep working.
@@ -173,7 +177,7 @@ Call `editFolder` to change a folder's characteristics. Use the same arguments a
 
 Notes
 =====
-- In order to use this library, you will need to [get your own API token](http://api.toodledo.com/2/account/doc_register.php). I have not included mine in the code. Add it to `ApiClient.__init__`.
+- In order to use this library, you will need to [get your own API token](http://api.toodledo.com/2/account/doc_register.php). I have not included mine in the code. Add it to the dot file (`~/.tdcli/tdclirc` by default).
 - The test harness `test_poodledo.py` does not function at all currently.
 - Pull requests always welcome!
 
