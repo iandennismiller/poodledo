@@ -595,7 +595,7 @@ class ApiClient(object):
         '''
         id_ = self.getNotebook(label).id
         self._notebooks_cache = None
-        return self._call(key=key, kind='notebooks', action='delete', id_=id_).text
+        return self._call(key=key, kind='notebooks', action='delete', notebooks=[id_]).text
 
     @check_api_key
     def editNotebook(self, label, key=None, **kwargs):
@@ -674,7 +674,7 @@ class ApiClient(object):
         '''
         id_ = self.getTask(label).id
         self._tasks_cache = None
-        return self._call(key=key, kind='tasks', action='delete', id_=id_).text
+        return self._call(key=key, kind='tasks', action='delete', tasks=[id_]).text
 
     @check_api_key
     def editTask(self, label, key=None, **kwargs):
