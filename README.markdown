@@ -1,5 +1,9 @@
 NEWS
 ====
+2011-12-31
+----------
+[fgtham](https://github.com/fgtham) raised [Issue#3](https://github.com/handyman5/poodledo/issues/3), relating to the `deleteNotebook` and `deleteTask` functions being broken. This has now been fixed. Thanks for the patch!
+
 2011-11-23
 ----------
 I've taken ralesi's suggestion in [Issue#2](https://github.com/handyman5/poodledo/issues/2) and moved the API application ID and token to the config file (`~/.tdcli/tdclirc` by default). This way, `git pull`s will not conflict with your local ID and token. Thanks for the suggestion, Rich!
