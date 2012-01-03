@@ -1,5 +1,9 @@
 NEWS
 ====
+2012-01-03
+----------
+The Toodledo 3rd-party apps directory has been updated with [a link to poodledo](https://www.toodledo.com/tools/directory_item.php?appid=poodledo2). Hopefully that will increase the usage of this library.
+
 2011-12-31
 ----------
 [fgtham](https://github.com/fgtham) raised [Issue#3](https://github.com/handyman5/poodledo/issues/3), relating to the `deleteNotebook` and `deleteTask` functions being broken. This has now been fixed. Thanks for the patch!
