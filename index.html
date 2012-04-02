@@ -1,0 +1,167 @@
+<!doctype html>
+<!-- The Time Machine GitHub pages theme was designed and developed by Jon Rohan, on Feb 7, 2012. -->
+<!-- Follow him for fun. http://twitter.com/jonrohan. Tail his code on http://github.com/jonrohan -->
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <link rel="stylesheet" href="stylesheets/stylesheet.css" media="screen"/>
+  <link rel="stylesheet" href="stylesheets/pygment_trac.css"/>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script type="text/javascript" src="javascripts/script.js"></script>
+
+  <title>Poodledo</title>
+  <meta name="description" content="A python library for working with the web-based task management software Toodledo">
+
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+</head>
+
+<body>
+
+  <div class="wrapper">
+    <header>
+      <h1 class="title">Poodledo</h1>
+    </header>
+    <div id="container">
+      <p class="tagline">A python library for working with the web-based task management software Toodledo</p>
+      <div id="main" role="main">
+        <div class="download-bar">
+        <div class="inner">
+          <a href="https://github.com/handyman5/poodledo/tarball/master" class="download-button tar"><span>Download</span></a>
+          <a href="https://github.com/handyman5/poodledo/zipball/master" class="download-button zip"><span>Download</span></a>
+          <a href="https://github.com/handyman5/poodledo" class="code">fork Poodledo on GitHub</a>
+        </div>
+        <span class="blc"></span><span class="trc"></span>
+        </div>
+        <article class="markdown-body">
+          <h1>Introduction</h1>
+
+<p>poodledo is a Python library for working with the web-based task management software <a href="http://www.toodledo.com">Toodledo</a>.</p>
+
+<p>This particular version is an amalgam of two previous versions (<a href="http://code.google.com/p/poodledo/">Felix Riedel's</a> and <a href="https://github.com/martint17r/poodledo">Martin Treusch von Buttlar's</a>), substantially rewritten to use the <a href="http://api.toodledo.com/2/index.php">Toodledo API v2.0</a>.</p>
+
+<h1>Requirements</h1>
+
+<ul>
+<li>Python 2.5+ (or, an older version with the ElementTree module installed)</li>
+</ul><p>In addition, <code>tdcli</code> requires the following Python modules (both available by <code>pip install</code>):</p>
+
+<ul>
+<li>
+<a href="http://www.cosc.canterbury.ac.nz/greg.ewing/python/Plex/">Plex</a> v2.0.0</li>
+<li>
+<a href="http://code.google.com/p/parsedatetime/">parsedatetime</a> v0.8.7</li>
+</ul><h1>Usage</h1>
+
+<p>poodledo handles almost all of the API calls described in the <a href="http://api.toodledo.com/2/index.php">Toodledo docs</a>.</p>
+
+<h2>Initialization</h2>
+
+<p>Create an <code>ApiClient</code> object and call <code>authenticate()</code> to get a session key. This key is re-used in subsequent API calls until it expires.</p>
+
+<pre><code>from apiclient import ApiClient
+c = ApiClient()
+c.authenticate('username@email.dom', 'password')
+</code></pre>
+
+<h2>API Structure</h2>
+
+<p>Toodledo's API is broken down into six basic object types:</p>
+
+<ul>
+<li>Folders</li>
+<li>Contexts</li>
+<li>Goals</li>
+<li>Locations</li>
+<li>Notebooks</li>
+<li>Tasks</li>
+</ul><p>along with several other miscellaneous methods (<code>getAccountInfo</code>, <code>getToken</code>, etc.).</p>
+
+<p>Each object type supports the same basic operations: "add", "delete", "edit", and "get". I'll use Folders for these examples, but the other object types have equivalent methods with the appropriate names (i.e., <code>getContexts</code>, <code>editLocation</code>, <code>deleteGoal</code>, etc.).</p>
+
+<h2>Retrieving</h2>
+
+<p>Call <code>getFolders</code> to retrieve a list of folder objects from the API. This list is cached by the ApiClient until a change is made with another API call.</p>
+
+<pre><code>c.getFolders()
+</code></pre>
+
+<p>Call <code>getFolder</code> to retrieve a specific folder object. This method takes one argument, which can be either the object's ID or its name/title.</p>
+
+<pre><code>c.getFolder('My name is')
+c.getFolder(3472958)
+</code></pre>
+
+<h2>Adding</h2>
+
+<p>Call <code>addFolder</code> to add a new folder with the API.</p>
+
+<pre><code>c.addFolder('New Folder Name')
+</code></pre>
+
+<p>You can also specify object parameters as keyword arguments.</p>
+
+<pre><code>c.addFolder('Private, Archived Folder', archived=True, private=True)
+</code></pre>
+
+<h2>Deleting</h2>
+
+<p>Call <code>deleteFolder</code> to delete a folder with the API. This method uses <code>getFolder</code> to identify its argument, so you can specify either the folder's name or its ID.</p>
+
+<pre><code>c.deleteFolder('Doomed Folder')
+</code></pre>
+
+<h2>Editing</h2>
+
+<p>Call <code>editFolder</code> to change a folder's characteristics. Use the same arguments as <code>getFolder</code> to identify the target, and pass the changes as keyword arguments.</p>
+
+<pre><code>c.editFolder('Current Folder Name', name='New Folder Name', private=True)
+</code></pre>
+
+<h1>Notes</h1>
+
+<ul>
+<li>In order to use this library, you will need to <a href="http://api.toodledo.com/2/account/doc_register.php">get your own API token</a>. I have not included mine in the code. Add it to the dot file (<code>~/.tdcli/tdclirc</code> by default).</li>
+<li>The test harness <code>test_poodledo.py</code> does not function at all currently.</li>
+<li>Pull requests always welcome!</li>
+</ul><h1>TODO</h1>
+
+<ul>
+<li>Update the test harness <code>test_toodledo.py</code> for API 2.0</li>
+<li>Implement a generic account/key storage system</li>
+<li>Write several sample scripts for reference</li>
+<li>Add batch processing for notes and tasks</li>
+<li>Write a "pythonic" wrapper that makes the returned objects smart (e.g., doing <code>task_object.name = "New Name"</code> would actually update the task's name with the API)</li>
+<li>Make objects which have an ordering (folders and subtasks) a) honor that ordering, and b) be re-orderable</li>
+</ul><h1>License</h1>
+
+<p>poodledo is released under a <strong>BSD License</strong>. See the LICENSE file for details.</p>
+
+<h1>Contact</h1>
+
+<p>You can email me at comptona@gmail.com.</p>
+
+<p>To report bugs or request features, please use the <strong><a href="https://github.com/handyman5/poodledo/issues">Issues</a></strong> feature.</p>
+        </article>
+      </div>
+    </div>
+    <footer>
+      <div class="owner">
+      <p><a href="https://github.com/handyman5" class="avatar"><img src="https://secure.gravatar.com/avatar/965def43faefdac5385468e23f303f5f?s=30&amp;d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-140.png" width="48" height="48"/></a> <a href="https://github.com/handyman5">handyman5</a> maintains <a href="https://github.com/handyman5/poodledo">Poodledo</a></p>
+      </div>
+      <div class="creds">
+        <small>This page generated using <a href="https://pages.github.com/">GitHub Pages</a><br/>theme by <a href="http://twitter.com/jonrohan/">Jon Rohan</a></small>
+      </div>
+    </footer>
+  </div>
+  <div class="current-section">
+    <a href="#top">Scroll to top</a>
+    <a href="https://github.com/handyman5/poodledo/tarball/master" class="tar">tar</a><a href="https://github.com/handyman5/poodledo/zipball/master" class="zip">zip</a><a href="" class="code">source code</a>
+    <p class="name"></p>
+  </div>
+
+  
+</body>
+</html>
