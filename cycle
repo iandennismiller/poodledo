@@ -51,6 +51,8 @@ if __name__ == '__main__':
                       help="Mark this task as complete")
     parser.add_option("-p", action="store", type=int, dest="priority", metavar="TASK#",
                       help="Change the priority of this task (A, B, or C)")
+    parser.add_option("-s", "--show", action="store", type=int, metavar="TASK#",
+                      help="Show task details")
     (options, args) = parser.parse_args()
 
     try:
@@ -133,6 +135,14 @@ if __name__ == '__main__':
             parser.error("That task does not exist!")
         print "Marking task '%s' as complete" % task.title
         client.editTask(task, completed=mktime(localtime()))
+
+    elif options.show:
+        try:
+            task = tasks[options.show-1]
+        except IndexError:
+            parser.error("That task does not exist!")
+        print "Showing task '%s'" % task.title
+        print client.getTask(task, cache=True)
 
     else:
         for item in tasks:
