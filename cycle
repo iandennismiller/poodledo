@@ -39,17 +39,17 @@ def get_timedelta(source, dest):
 
 if __name__ == '__main__':
     parser = OptionParser(usage = "usage: %prog [<flag> [<TASK#>]] [-d <DATE>]\nPrints today's tasks by default")
-    parser.add_option("-d", action="store", dest="day", metavar="DAY", default='today',
+    parser.add_option("-d", "--day", action="store", metavar="DAY", default='today',
                       help="Day to operate on ('today' by default, parses most datestrings)")
-    parser.add_option("-t", action="store", dest="tag", metavar="TAG",
+    parser.add_option("-t", "--tag", action="store", metavar="TAG",
                       help="Only show tasks with the tag TAG")
-    parser.add_option("-a", action="store_true", dest="add",
+    parser.add_option("-a", "--add", action="store_true",
                       help="Add a new task for today")
-    parser.add_option("-m", action="store", type=int, dest="move", metavar="TASK#",
+    parser.add_option("-m", "--move", action="store", type=int, metavar="TASK#",
                       help="Move this task to the next day")
-    parser.add_option("-c", action="store", type=int, dest="complete", metavar="TASK#",
+    parser.add_option("-c", "--complete", action="store", type=int, metavar="TASK#",
                       help="Mark this task as complete")
-    parser.add_option("-p", action="store", type=int, dest="priority", metavar="TASK#",
+    parser.add_option("-p", "--priority", action="store", type=int, metavar="TASK#",
                       help="Change the priority of this task (A, B, or C)")
     parser.add_option("-s", "--show", action="store", type=int, metavar="TASK#",
                       help="Show task details")
@@ -101,7 +101,10 @@ if __name__ == '__main__':
             import readline
             r = raw_input("Enter a task description: ")
         task = parse(r)
-        client.addTask(duedate=start, tag=tag, **task)
+        if not tag:
+            print client.addTask(duedate=start, **task)
+        else:
+            print client.addTask(duedate=start, tag=tag, **task)
 
     elif options.move:
         try:
