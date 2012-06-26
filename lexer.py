@@ -79,7 +79,8 @@ def build_lexer(picklefile=None):
         durationfield = freetext
         length = bolsp + Str("~") + Rep1(durationfield)
         reminder = bolsp + Str(":") + Rep1(durationfield)
-        note = bolsp + Str("?") + Rep1(freetext)
+        anything = Rep1(letter | digit | formatting | bolsp)
+        note = bolsp + Str("?") + Rep1(anything)
 
         lex = Lexicon([
                 (space, IGNORE),
