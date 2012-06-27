@@ -4,6 +4,8 @@ NEWS
 ----------
 I added an `__init__.py` to address [Issue#4](https://github.com/handyman5/poodledo/issues/4), so that `poodledo` can be included as a module.
 
+I also made several improvements to the `cycle` tool, as detailed in [README-cycle](https://github.com/handyman5/poodledo/blob/master/README-cycle.markdown).
+
 2012-01-03
 ----------
 The Toodledo 3rd-party apps directory has been updated with [a link to poodledo](https://www.toodledo.com/tools/directory_item.php?appid=poodledo2). Hopefully that will increase the usage of this library.
