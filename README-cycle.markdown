@@ -1,5 +1,13 @@
 NEWS
 ====
+2012-06-26
+----------
+I made a few more improvements to the `cycle` tool:
+
+- I improved date handling for the "--day" and "--move" arguments to better support date strings with spaces in them (like "next thursday").
+- I added support for moving all of the tasks on a day by specifying '*' as the task argument. (Just specifying an asterisk gets eaten by the shell.)
+- Updated "--priority" to support all five priority levels.
+
 2011-11-16
 ----------
 I made several changes to `cycle` which have made it more useful to me:
@@ -34,41 +42,45 @@ Usage
 =====
 Running `cycle` by itself lists the tasks which are due today:
 
-    $ ./cycle
+    $ cycle
     1: (A) Write README for cycle
 
 `cycle -d` lists the tasks due on a specific day:
 
-    $ ./cycle -d tuesday
+    $ cycle -d tuesday
     1: (D) Tuesday's demonstration task
 
 This uses the [parsedatetime](http://code.google.com/p/parsedatetime/) library, which understands most human-readable strings ("tomorrow", "next wednesday", "june 12", etc.).
 
 `cycle -a` adds a new task, due today:
 
-    $ ./cycle -a Create a demonstration task
-    $ ./cycle
+    $ cycle -a Create a demonstration task
+    $ cycle
     1: (A) Write README for cycle
     2: (D) Create a demonstration task
 
 `cycle -p` reprioritizes a task:
 
-    $ ./cycle -p 2 B
+    $ cycle -p 2 B
     Reprioritizing task 'Create a demonstration task' to B
-    $ ./cycle
+    $ cycle
     1: (A) Write README for cycle
     2: (B) Create a demonstration task
 
 `cycle -m` moves a task to another day (tomorrow by default):
 
-    $ ./cycle -m 2
+    $ cycle -m 2
     Moving task 'Create a demonstration task' to tomorrow
-    $ ./cycle -d tomorrow
+    $ cycle -d tomorrow
     1: (B) Create a demonstration task
+    $ cycle -m 7 next wednesday
+    Moving task 'improve poodledo' to next wednesday
+    $ cycle -d next wednesday
+    1: (A) improve poodledo
 
 `cycle -c` marks a task as complete:
 
-    $ ./cycle -c 1
+    $ cycle -c 1
     Marking task 'Write README for cycle' as complete
 
 Notes
