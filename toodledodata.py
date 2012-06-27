@@ -147,8 +147,18 @@ class ToodledoData(object):
             self.title = node.text
 
     def __str__(self):
-        output = ["%s: %s" % (k, v) for (k, v) in self.__dict__.iteritems()]
-        return '\n'.join(output)
+        results = []
+        for k, v in self.__dict__.iteritems():
+            if v is None or v == 0 or v == "None" or v == "0":
+                continue
+            if k != "id":
+                try:
+                    v = datetime.fromtimestamp(int(v))
+                except (TypeError, ValueError):
+                    pass
+            results.append("%s: %s" % (k, v))
+
+        return '\n'.join(results)
 
     def __repr__(self):
         return str(self.__dict__)
