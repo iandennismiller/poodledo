@@ -1,5 +1,9 @@
 NEWS
 ====
+2012-06-26
+----------
+I added an `__init__.py` to address [Issue#4](https://github.com/handyman5/poodledo/issues/4), so that `poodledo` can be included as a module.
+
 2012-01-03
 ----------
 The Toodledo 3rd-party apps directory has been updated with [a link to poodledo](https://www.toodledo.com/tools/directory_item.php?appid=poodledo2). Hopefully that will increase the usage of this library.
