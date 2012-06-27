@@ -7,6 +7,7 @@ I made a few more improvements to the `cycle` tool:
 - I improved date handling for the "--day" and "--move" arguments to better support date strings with spaces in them (like "next thursday").
 - I added support for moving all of the tasks on a day by specifying '*' as the task argument. (Just specifying an asterisk gets eaten by the shell.)
 - Updated "--priority" to support all five priority levels.
+- Added a priority cutoff filter to the config file; by specifying "priority = -1" (or higher) in the \[filter\] section of your config file, `cycle` will hide tasks with a lower priority than that.
 
 2011-11-16
 ----------
