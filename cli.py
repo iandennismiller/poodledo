@@ -48,6 +48,14 @@ def get_tag(config):
         pass
     return tag
 
+def get_cutoff(config):
+    cutoff = None
+    try:
+        cutoff = int(config.get('filter', 'priority'))
+    except (NoSectionError, NoOptionError):
+        cutoff = -1
+    return cutoff
+
 def do_login(config=None):
     client = ApiClient()
     if not config:

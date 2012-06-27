@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 from apiclient import PoodledoError
-from cli import do_login, get_config, get_tag
+from cli import do_login, get_config, get_tag, get_cutoff
 from datetime import datetime, timedelta
 from dateutil import tz
 from lexer import parse, USAGE
@@ -82,6 +82,8 @@ if __name__ == '__main__':
 
     if isinstance(options.day, list):
         options.day = " ".join(options.day)
+
+    priority_cutoff = get_cutoff(config)
 
     start, end = get_day_boundaries(options.day)
     priorities = ['D', 'C', 'B', 'A', 'E']
@@ -176,6 +178,7 @@ if __name__ == '__main__':
         if not tasks:
             print "No tasks for %s. Go home early!" % options.day
         for item in tasks:
+            if item.priority < priority_cutoff: continue
             output = []
             output.append("%s:" % str(tasks.index(item) + 1))
             output.append("(%s)" % priorities[item.priority])
