@@ -1,135 +1,91 @@
-from StringIO import StringIO
-from cli import CONFIGDIR
-from os.path import exists, join
-from plex import *
 from time import mktime
 import parsedatetime.parsedatetime as pdt
-import pickle
+import re
 
-USAGE = '''Enter a task and associated metadata:
+USAGE = '''Enter a task and associated metadata. Control-C to finish.
+- Type a symbol and <tab> to complete.
+- Parses dates and times, including things like '4:00 PM' and 'next thursday afternoon'.
+- Use [] to make spacing unambiguous.
 
-context: @<context>
-due date: #<date>; toodledo parses dates smartly, including "#next thursday", and email does consume the space after #next as part of the date
-due time: =<time>; translates time smartly
-folder: *<name>
-goal: +<goal>
-length: ~<time>; like "~4hours"
-location: -<location>
-note: ?<note data>
-priority: default is zero; single ! = 1, !! = 2, !!! = 3 (top)
-reminder: :<lead time>; ":5 hours"
-repeat: &<schedule>
-star: * alone makes the task starred
-start date: ><date> (&lt;)
-start time: ^<time>
-status: $<status>
-tag: %<tag>; can select multiple with "%tag1, tag2"
+context:    @<context>     due date:   #<date>
+folder:     *<name>        due time:   =<time>
+goal:       +<goal>        start date: ><date> (&lt;)
+location:   -<location>    start time: ^<time>
+repeat:     &<schedule>    length:     ~<time>
+
+priority:   default is zero; single ! = 1, !! = 2, !!! = 3 (top)
+reminder:   :<lead time>; ":5 hours"
+star:       * alone makes the task starred
+status:     $<status>
+tag:        %<tag>; can select multiple with "%tag1, tag2"
+note:       ?<note data>; or, all lines after the first are put in the note
 '''
 
 p = pdt.Calendar()
 
-def build_lexer(picklefile=None):
-    lex = None
-    if picklefile and exists(picklefile):
-        try:
-            with open(picklefile, "r") as fd:
-                lex = pickle.load(fd)
-        except (KeyError, IOError):
-            pass    # pickle loading failed; regenerate lexer
-
-    if not lex:
-        letter = Range("AZaz")
-        digit = Range("09")
-        apos = Str("'")
-        dash = Str("-")
-        comma = Str(",")
-        period = Str(".")
-        slash = Str("/")
-        underscore = Str("_")
-        parens = Any("()")
-        formatting = Any("'-,./_():;?\\|!+#*%&")
-        word = Rep1(letter | digit | parens | dash | slash) + Rep(letter | digit | apos | dash | comma | period | slash | underscore | formatting | parens)
-        number = Rep1(digit)
-        space = Any(" \t")
-        newline = Any("\n\r")
-        quote = Str("'")
-        doublequote= Str('"')
-        bolsp = Alt(Bol, space)
-        freetext = Alt( Rep1(word) + Rep(space + word),
-                        quote + Rep1(word) + Rep(space + word) + quote,
-                        doublequote + Rep1(word) + Rep(space + word) + doublequote)
-
-        folder = bolsp + Str("*") + Rep1(freetext)
-        context = bolsp + Str("@") + Opt(Str("@")) + Rep1(freetext)
-        excl = Str("!")
-        priority = bolsp + Rep1(excl)
-        star = bolsp + Str("*")
-#datefield = digit + digit + digit + digit + Str("/", "-") + digit + digit + Str("/", "-") + digit + digit
-        datefield = freetext
-        duedate = bolsp + Str("#") + datefield
-        startdate = bolsp + Str(">") + datefield
-        goal = bolsp + Str("+") + Rep1(freetext)
-        status = bolsp + Str("$") + Rep1(freetext)
-#tagname = Rep1(word) + Opt(Str(",")) + Opt(space)
-        tag = bolsp + Str("%") + Rep1(word) + Rep(Str(",") + Opt(space) + word)
-        timefield = Rep1(number) + Opt(Str(":") + Rep1(number)) + Opt(space) + Str("AM", "PM", "am", "pm")
-        duetime = bolsp + Str("=") + Rep1(timefield)
-        starttime = bolsp + Str("^") + Rep1(timefield)
-        location = bolsp + Str("-") + Rep1(freetext)
-        durationfield = freetext
-        length = bolsp + Str("~") + Rep1(durationfield)
-        reminder = bolsp + Str(":") + Rep1(durationfield)
-        anything = Rep1(letter | digit | formatting | bolsp)
-        note = bolsp + Str("?") + Rep1(anything)
-
-        lex = Lexicon([
-                (space, IGNORE),
-                (newline, 'newline'),
-                (freetext, 'title'),
-                (folder, 'folder'),
-                (context, 'context'),
-                (priority, 'priority'),
-                (duedate, 'duedate'),
-                (startdate, 'startdate'),
-                (goal, 'goal'),
-                (status, 'status'),
-                (tag, 'tag'),
-                (duetime, 'duetime'),
-                (starttime, 'starttime'),
-                (location, 'location'),
-                (length, 'length'),
-                (reminder, 'reminder'),
-                (note, 'note'),
-                ])
-
-        if picklefile:
-            with open(picklefile, "w") as fd:
-                pickle.dump(lex, fd)
-
-    return lex
-
 def rationalize(task):
     for k in task.keys():
-        task[k] = task[k].strip()
-        if k in ['folder', 'context', 'duedate', 'startdate', 'goal', 'location', 'status', 'tag', 'duetime', 'starttime', 'length', 'reminder', 'note']:
-            task[k] = task[k][1:]
+        if isinstance(task[k], str):
+            task[k] = task[k].strip()
         if task[k][0] == '"' and task[k][-1] == '"':
             task[k] = task[k][1:-1]
         if k in ['duedate', 'startdate', 'duetime', 'starttime']:
             task[k] = mktime(p.parse(task[k])[0])
         if k == 'priority': task[k] = len(task[k])
+        if k == 'star': task[k] = True
     return task
 
-def parse(task, lex=None):
-    if not lex:
-        lex = build_lexer(join(CONFIGDIR, "lexer.pickle"))
-    r = StringIO(task)
-    scanner = Scanner(lex, r, "raw task")
+def dig(s, char=None, regex=None, **kw):
+    shovel = None
+    if regex:
+        shovel = re.compile(regex)
+    elif char:
+        if char in r'$^+*?':
+            char = '\\' + char
+        shovel = re.compile(r'(?:^|\W)' + char + r'(?:[\b ]?((?:[\w\"\'\.@]+ )*[\w\"\'\.@]+)[\b ]??|\[\b(.+?)\b\])')
+
+    else:
+        raise Error("Specify at least one of 'regex' or 'char'")
+    group = re.search(shovel, s)
+    if group:
+        bit = group.groups()[0]
+        s = re.sub(shovel, '', s)
+        return (s, bit)
+    else:
+        return (s, None)
+
+def parse(task_lines):
+    # regex-based parser
+    filters = [{'name': 'note', 'regex': r'[\b ]\?(.+?)$'},
+               {'name': 'context', 'char': '@'},
+               {'name': 'duedate', 'char': '#'},
+               {'name': 'duetime', 'regex': r'=(\d+(?::\d+)*(?: \w+)*|((?:\w+ )+\w+))'},
+               {'name': 'folder', 'char': r'\*'},
+               {'name': 'goal', 'char': r'\+'},
+               {'name': 'length', 'char': '~'},
+               {'name': 'location', 'char': r'\-'},
+               {'name': 'reminder', 'char': r'\:'},
+               {'name': 'repeat', 'char': r'\&'},
+               {'name': 'star', 'regex': r'[\b ](\*)[\b ]??'},
+               {'name': 'startdate', 'char': '>'},
+               {'name': 'starttime', 'regex': r'\^(\d+(?::\d+)*(?: \w+)*|((?:\w+ )+\w+))'},
+               {'name': 'status', 'char': r'\$'},
+               {'name': 'priority', 'regex': r'(?:[\b ](!{1,3})[\b ]?|\b([0-3])[\b ]?|[\b ](-1)[\b ]?)'},
+               {'name': 'tag', 'regex': r'%(?:((?:\w+, )*\w+)+|\[(.+?)\])'}]
+
     parsedtask = {}
-    while 1:
-        token = scanner.read()
-        if token[0] == 'newline' or token[0] is None:
-            if len(parsedtask.keys()) > 0:
-                return rationalize(parsedtask)
-        else:
-            parsedtask[token[0]] = token[1]
+
+    task = task_lines[0]
+    if len(task_lines) > 1:
+        note = [t for t in task_lines[1:] if t]
+        if note:
+            parsedtask['note'] = '\n'.join(note)
+
+    for f in filters:
+        (task, result) = dig(task, **f)
+        if result:
+            parsedtask[f['name']] = result
+
+    parsedtask['title'] = task
+    t = rationalize(parsedtask)
+    return t
