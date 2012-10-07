@@ -75,11 +75,14 @@ def parse(task_lines):
 
     parsedtask = {}
 
-    task = task_lines[0]
-    if len(task_lines) > 1:
-        note = [t for t in task_lines[1:] if t]
-        if note:
-            parsedtask['note'] = '\n'.join(note)
+    if isinstance(task_lines, str):
+        task = task_lines
+    else:
+        task = task_lines[0]
+        if len(task_lines) > 1:
+            note = [t for t in task_lines[1:] if t]
+            if note:
+                parsedtask['note'] = '\n'.join(note)
 
     for f in filters:
         (task, result) = dig(task, **f)
