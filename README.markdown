@@ -1,5 +1,28 @@
 NEWS
 ====
+2012-10-06
+----------
+I spent some time the last couple of days making some substantial changes to the new-task parser and the `tdcli` tool.
+
+### New Parser
+
+I tore out the plex-based lexer component (the bit that parsed arbitrary strings describing new tasks) and replaced it with a regex-based matching series, inspired by the way the [Ruby toodledo gem](https://github.com/wsargent/toodledo) does it. The lexer vocabulary was getting way too complicated and brittle, and I was having trouble making even small improvements or bug fixes.
+
+The user-facing behavior should be pretty much identical, if not improved in several respects (fewer things should blow up the parser). I've also fixed a few bugs I'd run into while adding my own tasks.
+
+### `tdcli` Improvements
+
+I added readline support to the `tdcli` new task reader (what you get when you run `tdcli` all by itself). This means you can use standard interactive prompt keyboard shortcuts (Control+A for beginning of line, etc.). This also let me build in two big new features:
+
+* **Support for multi-line notes** When adding a new task, pressing "Enter" will move to a new line, and that line (and all subsequent ones) will be incorporated into the new task as its note. Press Control+C or Control+D to stop editing and add the task.
+* **Tab-completion for several fields** When adding a new task, typing the symbol for context (@), folder (\*), goal (+), location (-) or status ($) and then hitting *TAB* will offer to tab-complete that field based on the available options already created in your account.
+
+I also added a couple of other new improvements not strictly related to the above two:
+
+* If you specify a context, folder, goal, or location which does not already exist when adding a task, `tdcli` will notice and offer to create it for you first.
+* `tdcli` now supports listing contexts and locations (in addition to listing tasks, folders, and goals like it already could).
+
+
 2012-06-26
 ----------
 I added an `__init__.py` to address [Issue#4](https://github.com/handyman5/poodledo/issues/4), so that `poodledo` can be included as a module.
