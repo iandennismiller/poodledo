@@ -143,7 +143,7 @@ class ToodledoData(object):
             self.__dict__[elem.tag] = typemap[elem.tag](elem.text)
         for a in node.attrib:
             self.__dict__[a] = typemap[a](node.attrib[a])
-        if node.text and not node.text.isspace() :
+        if node.text and not node.text.isspace():
             self.title = node.text
 
     def __str__(self):
@@ -162,3 +162,18 @@ class ToodledoData(object):
 
     def __repr__(self):
         return str(self.__dict__)
+
+    def keys(self):
+        return self.__dict__.keys()
+
+    def values(self):
+        return self.__dict__.values()
+
+    def __getitem__(self, key):
+        return self.__dict__[key]
+
+    def __contains__(self, key):
+        return bool(self.__dict__[key])
+
+    def __iter__(self):
+        return self.__dict__.iteritems()
