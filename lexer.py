@@ -48,7 +48,7 @@ def dig(s, char=None, regex=None, **kw):
         raise Error("Specify at least one of 'regex' or 'char'")
     group = re.search(shovel, s)
     if group:
-        bit = group.groups()[0]
+        bit = [x for x in group.groups() if x][0]
         s = re.sub(shovel, '', s)
         return (s, bit)
     else:
