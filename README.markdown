@@ -2,7 +2,7 @@ NEWS
 ====
 2012-11-04
 ----------
-Due to overwhelming demand :-) poodledo now has a proper setup.py and has been [added to pypi](XX). All the credit goes to [@iandennismiller](https://github.com/iandennismiller) for doing [all the hard work](https://github.com/handyman5/poodledo/pull/7) to make this change; thanks also to [@dsmcfarl](https://github.com/dsmcfarl) and [@Ciemaar](https://github.com/Ciemaar) for their help and support.
+Due to overwhelming demand :-) poodledo now has a proper setup.py and has been [added to pypi](http://pypi.python.org/pypi/poodledo/0.1). All the credit goes to [@iandennismiller](https://github.com/iandennismiller) for doing [all the hard work](https://github.com/handyman5/poodledo/pull/7) to make this change; thanks also to [@dsmcfarl](https://github.com/dsmcfarl) and [@Ciemaar](https://github.com/Ciemaar) for their help and support.
 
 `pip install poodledo` for the win!
 
