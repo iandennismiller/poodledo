@@ -106,7 +106,7 @@ class ToodledoData(object):
                 'location': int,
                 'meta': str,
                 'modified': int,
-                'note': unicode,
+                'note': str,
                 'order': str,
                 'parent': int,
                 'priority': int,
@@ -123,7 +123,7 @@ class ToodledoData(object):
                 'tag': str,
                 'timer': int,
                 'timeron': str,
-                'title': unicode,
+                'title': str,
                 },
             'notebook': {
                 'id': int,

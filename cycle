@@ -8,7 +8,11 @@ from lexer import parse, USAGE
 from optparse import OptionParser
 from sys import exit
 from time import mktime, localtime
-import parsedatetime.parsedatetime as pdt
+
+try:
+    import parsedatetime.parsedatetime as pdt
+except:
+    import parsedatetime as pdt
 
 def get_day_boundaries(day='today'):
     p = pdt.Calendar()
@@ -72,7 +76,7 @@ if __name__ == '__main__':
         config = get_config()
         client = do_login(config)
     except PoodledoError as e:
-        print e
+        print(e)
         exit(1)
 
     if options.tag:
@@ -98,15 +102,18 @@ if __name__ == '__main__':
         else:
             tasks.append(item)
 
-    tasks.sort(cmp, key=lambda x:(-(x.priority), x.duedate, x.duetime))
+    tasks.sort(key=lambda x:(-(x.priority), x.duedate, x.duetime))
 
     if options.add and options.complete:
         if len(args) > 0:
             r = ' '.join(args)
         else:
-            print USAGE
+            print(USAGE)
             import readline
-            r = raw_input("Enter a task description: ")
+            try:
+                r = raw_input("Enter a task description: ")
+            except NameError:
+                r = input("Enter a task description: ")
         task = parse(r)
         client.addTask(startdate=start, duedate=start, tag=tag, **task)
         client.editTask(task['title'], completed=mktime(localtime()))
@@ -115,14 +122,17 @@ if __name__ == '__main__':
         if len(args) > 0:
             r = ' '.join(args)
         else:
-            print USAGE
+            print(USAGE)
             import readline
-            r = raw_input("Enter a task description: ")
+            try:
+                r = raw_input("Enter a task description: ")
+            except NameError:
+                r = input("Enter a task description: ")
         task = parse(r)
         if not tag:
-            print client.addTask(duedate=start, **task)
+            print(client.addTask(duedate=start, **task))
         else:
-            print client.addTask(duedate=start, tag=tag, **task)
+            print(client.addTask(duedate=start, tag=tag, **task))
 
     elif options.move:
         queue = []
@@ -138,8 +148,8 @@ if __name__ == '__main__':
             parser.error("That task does not exist!")
 
         for task in queue:
-            dest = len(args) >= 1 and " ".join(args[0:]) or "tomorrow"
-            print "Moving task '%s' to %s" % (task.title, dest)
+            dest = len(args) == 1 and args[0] or "tomorrow"
+            print(("Moving task '%s' to %s" % (task.title, dest)))
             delta = get_timedelta(task.duedate, dest)
 
             if task.duetime != 0:
@@ -153,17 +163,17 @@ if __name__ == '__main__':
                 task = tasks[options.priority-1]
             except IndexError:
                 parser.error("That task does not exist!")
-            print "Reprioritizing task '%s' to %s" % (task.title, args[0])
+            print(("Reprioritizing task '%s' to %s" % (task.title, args[0])))
             client.editTask(task, priority=priorities.index(args[0]))
         else:
-            print "Please provide a priority to assign to the task."
+            print("Please provide a priority to assign to the task.")
 
     elif options.complete:
         try:
             task = tasks[options.complete-1]
         except IndexError:
             parser.error("That task does not exist!")
-        print "Marking task '%s' as complete" % task.title
+        print(("Marking task '%s' as complete" % task.title))
         client.editTask(task, completed=mktime(localtime()))
 
     elif options.show:
@@ -171,12 +181,12 @@ if __name__ == '__main__':
             task = tasks[options.show-1]
         except IndexError:
             parser.error("That task does not exist!")
-        print "Showing task '%s'" % task.title
-        print client.getTask(task, cache=True)
+        print("Showing task '%s'" % task.title)
+        print(client.getTask(task, cache=True))
 
     else:
         if not tasks:
-            print "No tasks for %s. Go home early!" % options.day
+            print("No tasks for %s. Go home early!" % options.day)
         for item in tasks:
             if item.priority < priority_cutoff: continue
             output = []
@@ -188,4 +198,4 @@ if __name__ == '__main__':
                 output.append("{%s}" % item.tag)
             output.append(item.title)
 
-            print " ".join(output)
+            print((" ".join(output)))

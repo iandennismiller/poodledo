@@ -1,9 +1,20 @@
 ## Import library functions
-from urllib import quote_plus
-from urllib2 import build_opener, quote
 from sys import exit
 from datetime import datetime, timedelta
 from toodledodata import ToodledoData
+
+try:
+    from urllib import quote_plus
+except ImportError:
+    from urllib.parse import quote_plus
+try:
+    from urllib2 import quote
+except ImportError:
+    from urllib.parse import quote
+try:
+    from urllib2 import build_opener
+except ImportError:
+    from urllib.request import build_opener
 
 try:
     import xml.etree.cElementTree as ET

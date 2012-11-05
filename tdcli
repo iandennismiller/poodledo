@@ -69,7 +69,7 @@ if __name__ == '__main__':
     try:
         client = do_login()
     except PoodledoError as e:
-        print e
+        print(e)
         exit(1)
 
     if options.action:
@@ -89,7 +89,7 @@ if __name__ == '__main__':
             readline.get_completer_delims().replace(":","").replace("-","").replace("/","").replace(' ','')
         )
         readline.set_completer(Completer().complete)
-        print USAGE
+        print(USAGE)
 
         r = []
         while True:
@@ -114,5 +114,5 @@ if __name__ == '__main__':
 
     print task
     client.addTask(**task)
-    print
-    print client.getTask(task['title'])
+    print()
+    print(client.getTask(task['title']))

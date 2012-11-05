@@ -1,6 +1,10 @@
 from time import mktime
-import parsedatetime.parsedatetime as pdt
 import re
+
+try:
+    import parsedatetime.parsedatetime as pdt
+except:
+    import parsedatetime as pdt
 
 USAGE = '''Enter a task and associated metadata. Control-C to finish.
 - Type a symbol and <tab> to complete.

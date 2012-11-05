@@ -1,11 +1,15 @@
 #!/usr/bin/python
 
-from ConfigParser import SafeConfigParser,NoOptionError,NoSectionError
 from apiclient import ApiClient,PoodledoError,ToodledoError
 from getpass import getpass
 from os import mkdir
 from os.path import exists, expanduser, join
 from sys import exit
+
+try:
+    from ConfigParser import SafeConfigParser,NoOptionError,NoSectionError
+except ImportError: 
+    from configparser import SafeConfigParser,NoOptionError,NoSectionError
 
 CONFIGDIR  = expanduser("~/.tdcli")
 CONFIGFILE = join(CONFIGDIR, "tdclirc")
@@ -28,9 +32,9 @@ def read_or_get_creds(config):
 
     try:
         username = config.get('config', 'username')
-        print "Username:", username
+        print("Username:", username)
     except (NoOptionError, NoSectionError):
-        print "Please enter your login credentials."
+        print("Please enter your login credentials.")
         username = raw_input("Username: ")
 
     try:
@@ -79,7 +83,7 @@ def do_login(config=None):
         try:
             client.authenticate(username, password)
         except ToodledoError as e:
-            print "No login credentials were successful; please try again."
+            print("No login credentials were successful; please try again.")
             raise e
 
         if not config.has_section('session'):
