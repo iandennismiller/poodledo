@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 from ConfigParser import SafeConfigParser,NoOptionError,NoSectionError
 from apiclient import ApiClient,PoodledoError,ToodledoError
 from getpass import getpass
