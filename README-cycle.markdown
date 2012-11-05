@@ -1,26 +1,3 @@
-NEWS
-====
-2012-06-26
-----------
-I made a few more improvements to the `cycle` tool:
-
-- I improved date handling for the "--day" and "--move" arguments to better support date strings with spaces in them (like "next thursday").
-- I added support for moving all of the tasks on a day by specifying '*' as the task argument. (Just specifying an asterisk gets eaten by the shell.)
-- Updated "--priority" to support all five priority levels.
-- Added a priority cutoff filter to the config file; by specifying "priority = -1" (or higher) in the \[filter\] section of your config file, `cycle` will hide tasks with a lower priority than that.
-
-2011-11-16
-----------
-I made several changes to `cycle` which have made it more useful to me:
-
-- `cycle` now supports a "-t" parameter; it will only print tasks with that tag. You can also add a section to the config file called "[filter]" and a key there called "tag" which will have the same effect. This way you can keep your home and work to-do lists separate if you want. Also, newly created tasks will carry the currently-defined tag.
-- `cycle` now supports combining the -a (add) and -c (complete) arguments; it will create a new task and immediately close it, to aid in keeping track of completed, unplanned work.
-- Tasks now sort by duedate and duetime, in addition to by priority.
-- The "-d" parameter now supports a special "week" value, which sets the range of displayed tasks to ("last sunday", "saturday") inclusive. This violates the Cycle System, but I find I need the view.
-
-I also added a bit of error checking.
-
-
 Introduction
 ============
 `cycle` is a command-line tool which implements the **Cycle System** from [Time Management for System Administrators](http://www.amazon.com/Management-System-Administrators-Thomas-Limoncelli/dp/0596007833) by Thomas Limoncelli. The Cycle System, in this context, has five main activities:
@@ -35,9 +12,19 @@ It's a lot to explain in a short blurb here, but basically, the idea is to assig
 
 Requirements
 ============
+
 - Python 2.5+ (or, an older version with the ElementTree module installed)
-- [Plex](http://www.cosc.canterbury.ac.nz/greg.ewing/python/Plex/) v2.0.0 (installable by pip)
-- [parsedatetime](http://code.google.com/p/parsedatetime/) v0.8.7 (installable by pip)
+- < Python 3 (working on this)
+
+In addition, `tdcli` requires the following Python modules (both available by `pip install`):
+
+- [parsedatetime](http://code.google.com/p/parsedatetime/) v0.8.7
+- [python-dateutil](http://labix.org/python-dateutil) v2.1
+
+Installation
+============
+
+    make install
 
 Usage
 =====
@@ -98,3 +85,25 @@ Contact
 You can email me at comptona@gmail.com.
 
 To report bugs or request features, please use the **[Issues](https://github.com/handyman5/poodledo/issues)** feature.
+
+Old News
+========
+2012-06-26
+----------
+I made a few more improvements to the `cycle` tool:
+
+- I improved date handling for the "--day" and "--move" arguments to better support date strings with spaces in them (like "next thursday").
+- I added support for moving all of the tasks on a day by specifying '*' as the task argument. (Just specifying an asterisk gets eaten by the shell.)
+- Updated "--priority" to support all five priority levels.
+- Added a priority cutoff filter to the config file; by specifying "priority = -1" (or higher) in the \[filter\] section of your config file, `cycle` will hide tasks with a lower priority than that.
+
+2011-11-16
+----------
+I made several changes to `cycle` which have made it more useful to me:
+
+- `cycle` now supports a "-t" parameter; it will only print tasks with that tag. You can also add a section to the config file called "[filter]" and a key there called "tag" which will have the same effect. This way you can keep your home and work to-do lists separate if you want. Also, newly created tasks will carry the currently-defined tag.
+- `cycle` now supports combining the -a (add) and -c (complete) arguments; it will create a new task and immediately close it, to aid in keeping track of completed, unplanned work.
+- Tasks now sort by duedate and duetime, in addition to by priority.
+- The "-d" parameter now supports a special "week" value, which sets the range of displayed tasks to ("last sunday", "saturday") inclusive. This violates the Cycle System, but I find I need the view.
+
+I also added a bit of error checking.

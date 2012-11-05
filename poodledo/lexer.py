@@ -79,7 +79,9 @@ def parse(task_lines):
 
     parsedtask = {}
 
-    if isinstance(task_lines, str):
+    if not task_lines:
+        return
+    elif isinstance(task_lines, str):
         task = task_lines
     else:
         task = task_lines[0]

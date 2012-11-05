@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 from apiclient import ApiClient,PoodledoError,ToodledoError
 from getpass import getpass
 from os import mkdir
