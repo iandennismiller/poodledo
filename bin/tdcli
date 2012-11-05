@@ -4,12 +4,13 @@ from poodledo.apiclient import PoodledoError
 from poodledo.cli import do_login
 from poodledo.lexer import parse, USAGE
 from optparse import OptionParser
+from six.moves import input
 from sys import exit
 import readline
 
 def ask_ok(prompt, retries=4, complaint='Yes or no, comrade!'):
     while True:
-        ok = raw_input(prompt)
+        ok = input(prompt)
         if ok in ('y', 'ye', 'yes'):
             return True
         if ok in ('n', 'no', 'nop', 'nope'):
@@ -17,7 +18,7 @@ def ask_ok(prompt, retries=4, complaint='Yes or no, comrade!'):
         retries = retries - 1
         if retries < 0:
             raise IOError('refusenik user')
-        print complaint
+        print(complaint)
 
 
 class Completer(object):
@@ -78,7 +79,7 @@ if __name__ == '__main__':
         else:
             items = sorted([x.name for x in client.dispatchCall(options.action, 'getall')()])
 
-        for item in items: print "* " + item
+        for item in items: print("* " + item)
         exit(0)
 
     elif len(args) >= 1:
@@ -94,7 +95,7 @@ if __name__ == '__main__':
         r = []
         while True:
             try:
-                r2 = raw_input('> ')
+                r2 = input('> ')
                 r.append(r2)
             except (KeyboardInterrupt, EOFError):
                 break
@@ -110,10 +111,10 @@ if __name__ == '__main__':
                     if ask_ok("That %s (%s) doesn't exist! Create it? " % (obj, task[obj])):
                         client.dispatchCall(obj, 'add')(task[obj])
                 except KeyboardInterrupt:
-                    print
+                    print()
                     exit(0)
 
-    print task
+    print(task)
     client.addTask(**task)
     print()
     print(client.getTask(task['title']))

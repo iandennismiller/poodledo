@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 from dateutil import tz
 from poodledo.lexer import parse, USAGE
 from optparse import OptionParser
+from six.moves import input
 from sys import exit
 from time import mktime, localtime
 
@@ -110,10 +111,7 @@ if __name__ == '__main__':
         else:
             print(USAGE)
             import readline
-            try:
-                r = raw_input("Enter a task description: ")
-            except NameError:
-                r = input("Enter a task description: ")
+            r = input("Enter a task description: ")
         task = parse(r)
         client.addTask(startdate=start, duedate=start, tag=tag, **task)
         client.editTask(task['title'], completed=mktime(localtime()))
@@ -124,10 +122,7 @@ if __name__ == '__main__':
         else:
             print(USAGE)
             import readline
-            try:
-                r = raw_input("Enter a task description: ")
-            except NameError:
-                r = input("Enter a task description: ")
+            r = input("Enter a task description: ")
         task = parse(r)
         if not tag:
             print(client.addTask(duedate=start, **task))
