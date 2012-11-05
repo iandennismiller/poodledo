@@ -6,6 +6,8 @@ Due to overwhelming demand :-) poodledo now has a proper setup.py and has been [
 
 `pip install poodledo` for the win!
 
+Also, while I was poking around, I added preliminary support for Python 3, mostly using the "six" module. I can't say it offers full support yet because it requires `parsedatetime`, and the version in pypi doesn't support Python 3; however, the [1.0.0 version on github](https://github.com/bear/parsedatetime) _does_ support Python 3, and poodledo works great with that. All of the other Python-3-supporting changes have been regression-tested and shouldn't cause any trouble on Python 2.6+. The minimum version requirement has been raised to Python 2.6; it's probably effectively been Python 2.6+ for over a year (code using "except foo as bar" has been in the repo at least that long), so now I'm making it official.
+
 ------
 
 Introduction
@@ -17,13 +19,13 @@ This particular version is an amalgam of two previous versions ([Felix Riedel's]
 Requirements
 ============
 
-- Python 2.5+ (or, an older version with the ElementTree module installed)
-- < Python 3 (working on this)
+- Python 2.6+, including 3+
 
 In addition, `tdcli` requires the following Python modules (both available by `pip install`):
 
 - [parsedatetime](http://code.google.com/p/parsedatetime/) v0.8.7
 - [python-dateutil](http://labix.org/python-dateutil) v2.1
+- [six](http://pypi.python.org/pypi/six/) v1.2.0
 
 Installation
 ============
