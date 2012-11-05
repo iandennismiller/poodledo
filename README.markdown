@@ -1,3 +1,8 @@
+Installation
+============
+
+make install
+
 NEWS
 ====
 2012-10-06
