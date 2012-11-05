@@ -1,7 +1,7 @@
 ## Import library functions
 from sys import exit
 from datetime import datetime, timedelta
-from toodledodata import ToodledoData
+from poodledo.toodledodata import ToodledoData
 
 try:
     from urllib import quote_plus
