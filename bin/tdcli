@@ -1,8 +1,8 @@
 #!/usr/bin/python
 
-from apiclient import PoodledoError
-from cli import do_login
-from lexer import parse, USAGE
+from poodledo.apiclient import PoodledoError
+from poodledo.cli import do_login
+from poodledo.lexer import parse, USAGE
 from optparse import OptionParser
 from sys import exit
 import readline
