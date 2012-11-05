@@ -1,4 +1,4 @@
-from apiclient import ApiClient,PoodledoError,ToodledoError
+from poodledo.apiclient import ApiClient,PoodledoError,ToodledoError
 from getpass import getpass
 from os import mkdir
 from os.path import exists, expanduser, join

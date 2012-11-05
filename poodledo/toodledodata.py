@@ -1,3 +1,4 @@
+import six
 import time
 from datetime import datetime, timedelta
 
@@ -106,7 +107,7 @@ class ToodledoData(object):
                 'location': int,
                 'meta': str,
                 'modified': int,
-                'note': str,
+                'note': six.u,
                 'order': str,
                 'parent': int,
                 'priority': int,
@@ -123,15 +124,15 @@ class ToodledoData(object):
                 'tag': str,
                 'timer': int,
                 'timeron': str,
-                'title': str,
+                'title': six.u,
                 },
             'notebook': {
                 'id': int,
                 'folder': int,
                 'added': str,
                 'modified': str,
-                'title': str,
-                'text': str,
+                'title': six.u,
+                'text': six.u,
                 'private': _boolstr,
                 'stamp': str,
                 },
@@ -148,7 +149,7 @@ class ToodledoData(object):
 
     def __str__(self):
         results = []
-        for k, v in self.__dict__.iteritems():
+        for k, v in six.iteritems(self.__dict__):
             if v is None or v == 0 or v == "None" or v == "0":
                 continue
             if k != "id":
@@ -176,4 +177,4 @@ class ToodledoData(object):
         return bool(self.__dict__[key])
 
     def __iter__(self):
-        return self.__dict__.iteritems()
+        return six.iteritems(self.__dict__)
