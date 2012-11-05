@@ -7,6 +7,6 @@ install:
 	python setup.py install
 
 test:
-	@echo test
+	cd tests && python ./test_poodledo.py
 
 .PHONY: clean install test
