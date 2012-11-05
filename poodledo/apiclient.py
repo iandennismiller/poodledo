@@ -3,7 +3,7 @@ from urllib import quote_plus
 from urllib2 import build_opener, quote
 from sys import exit
 from datetime import datetime, timedelta
-from toodledodata import ToodledoData
+from poodledo.toodledodata import ToodledoData
 
 try:
     import xml.etree.cElementTree as ET
