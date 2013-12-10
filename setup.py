@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os, shutil
 
-version = '0.2'
+version = '0.2.1'
 
 setup(name='poodledo',
       version=version,

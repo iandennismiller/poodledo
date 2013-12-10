@@ -19,6 +19,12 @@ def _date(string):
 def _boolstr(string):
     return bool(int(string))
 
+def _unicode(string):
+    # https://github.com/django-extensions/django-extensions/commit/5d330294117b0e7bb2b82f44d23ce9ef6d339724
+    if not six.PY3 and not isinstance(string, six.text_type):
+        string = six.u(string)
+    return string
+
 def flatten(x):
     result = []
     if not hasattr(x, "__iter__"):
@@ -107,7 +113,7 @@ class ToodledoData(object):
                 'location': int,
                 'meta': str,
                 'modified': int,
-                'note': six.u,
+                'note': _unicode,
                 'order': str,
                 'parent': int,
                 'priority': int,
@@ -124,15 +130,15 @@ class ToodledoData(object):
                 'tag': str,
                 'timer': int,
                 'timeron': str,
-                'title': six.u,
+                'title': _unicode,
                 },
             'notebook': {
                 'id': int,
                 'folder': int,
                 'added': str,
                 'modified': str,
-                'title': six.u,
-                'text': six.u,
+                'title': _unicode,
+                'text': _unicode,
                 'private': _boolstr,
                 'stamp': str,
                 },
